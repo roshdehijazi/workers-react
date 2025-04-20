@@ -1,0 +1,144 @@
+/* SideBar.css - Complete Stylesheet */
+
+/* Base Sidebar Styles */
+.sidebar {
+    height: 100vh;
+    background-color: #2c3e50;
+    color: white;
+    transition: width 0.3s ease;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-x: hidden;
+    z-index: 1000; /* Ensure sidebar stays above other content */
+  }
+  
+  /* Open/Closed States */
+  .sidebar.open {
+    width: 250px;
+  }
+  
+  .sidebar.closed {
+    width: 70px;
+  }
+  
+  /* Toggle Button */
+  .toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    text-align: right;
+    transition: all 0.3s ease;
+  }
+  
+  .sidebar.closed .toggle-btn {
+    text-align: center;
+  }
+  
+  /* Sidebar Content */
+  .sidebar-content {
+    padding: 20px;
+  }
+  
+  .sidebar-content h2 {
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    white-space: nowrap;
+  }
+  
+  .sidebar-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar-content li {
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  /* Link Styles */
+  .sidebar-content a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 8px 0;
+    transition: all 0.3s ease;
+  }
+  
+  .sidebar-content a:hover {
+    color: #3498db;
+    padding-left: 10px;
+  }
+  
+  /* Active State */
+  .sidebar-content li.active {
+    background-color: #34495e;
+    border-left: 4px solid #3498db;
+  }
+  
+  .sidebar-content li.active a {
+    color: #3498db;
+    padding-left: 6px; /* 10px - 4px border */
+  }
+  
+  /* Icon and Text Alignment */
+  .icon {
+    margin-right: 10px;
+    font-size: 1.2rem;
+    vertical-align: middle;
+    transition: all 0.3s ease;
+  }
+  
+  .text {
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  
+  /* Collapsed State Styles */
+  .sidebar.closed .sidebar-content {
+    display: block; /* Changed from none to show icons */
+  }
+  
+  .sidebar.closed .sidebar-content h2 {
+    display: none;
+  }
+  
+  .sidebar.closed .sidebar-content ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sidebar.closed .sidebar-content li {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar.closed .sidebar-content li a {
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .sidebar.closed .icon {
+    margin-right: 0;
+    font-size: 1.5rem;
+  }
+  
+  /* Main Content Adjustment */
+  .main-content {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .sidebar.closed ~ .main-content {
+    margin-left: 50px;
+  }

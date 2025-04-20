@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
-import Dashboard from './components/Dashboard';
+import Home from './components/Home'
 import { Box } from '@mui/material';
 
 function App() {
@@ -20,16 +20,16 @@ function App() {
       <Box sx={{ minHeight: '100vh' }}>
         <Routes>
           <Route path="/login" element={
-            isAuthenticated ? <Navigate to="/dashboard" /> : <Login setAuth={setIsAuthenticated} />
+            isAuthenticated ? <Navigate to="/home" /> : <Login setAuth={setIsAuthenticated} />
           } />
           <Route path="/register" element={
-            isAuthenticated ? <Navigate to="/dashboard" /> : <Register setAuth={setIsAuthenticated} />
+            isAuthenticated ? <Navigate to="/home" /> : <Register setAuth={setIsAuthenticated} />
           } />
-          <Route path="/dashboard" element={
-            isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
+          <Route path="/home" element={
+            isAuthenticated ? <Home /> : <Navigate to="/login" />
           } />
           <Route path="/" element={
-            isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
+            isAuthenticated ? <Navigate to="/home" /> : <Navigate to="/login" />
           } />
         </Routes>
       </Box>
