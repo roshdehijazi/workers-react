@@ -8,7 +8,6 @@ import {
   Button,
   Box,
   Typography,
-  Link,
   Alert,
   CircularProgress,
   MenuItem,
@@ -16,6 +15,7 @@ import {
   FormControl,
   InputLabel
 } from '@mui/material';
+import '../styles/Login&Register.css'; // (we will use same Login&Register.css)
 
 const Register = ({ setAuth }) => {
   const navigate = useNavigate();
@@ -59,30 +59,24 @@ const Register = ({ setAuth }) => {
   });
 
   return (
-    <Box sx={{ 
-        maxWidth: 400, 
-        mx: 'auto', 
-        mt: 8, 
-        p: 4,
-        backgroundColor: 'background.paper',
-        borderRadius: 2,
-        boxShadow: 3,
-        '& .MuiTextField-root, & .MuiFormControl-root': {
-          mb: 2
-        },
-        '& .MuiButton-root': {
-          mt: 3,
-          py: 1.5
-        }
-      }}>
-      <Typography variant="h4" gutterBottom>Register</Typography>
-      
+    <Box className="login-box">
+      <Typography 
+        sx={{
+          color: '#333333',
+          textAlign: 'center',
+          fontSize: '32px',
+          fontWeight: 'bold',
+          mb: 3
+        }}
+      >
+        Register
+      </Typography>
+
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
       <form onSubmit={formik.handleSubmit}>
         <TextField
           fullWidth
-          margin="normal"
           id="username"
           name="username"
           label="Username"
@@ -91,11 +85,11 @@ const Register = ({ setAuth }) => {
           onBlur={formik.handleBlur}
           error={formik.touched.username && Boolean(formik.errors.username)}
           helperText={formik.touched.username && formik.errors.username}
+          margin="normal"
         />
 
         <TextField
           fullWidth
-          margin="normal"
           id="email"
           name="email"
           label="Email"
@@ -105,11 +99,11 @@ const Register = ({ setAuth }) => {
           onBlur={formik.handleBlur}
           error={formik.touched.email && Boolean(formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
+          margin="normal"
         />
 
         <TextField
           fullWidth
-          margin="normal"
           id="password"
           name="password"
           label="Password"
@@ -119,11 +113,11 @@ const Register = ({ setAuth }) => {
           onBlur={formik.handleBlur}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
+          margin="normal"
         />
 
         <TextField
           fullWidth
-          margin="normal"
           id="confirmPassword"
           name="confirmPassword"
           label="Confirm Password"
@@ -133,10 +127,11 @@ const Register = ({ setAuth }) => {
           onBlur={formik.handleBlur}
           error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
           helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
+          margin="normal"
         />
 
         <FormControl fullWidth margin="normal">
-          <InputLabel id="role-label">Role</InputLabel>
+          <InputLabel id="role-label" sx={{ color: '#333333' }}>Role</InputLabel>
           <Select
             labelId="role-label"
             id="role"
@@ -146,6 +141,7 @@ const Register = ({ setAuth }) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.role && Boolean(formik.errors.role)}
+            sx={{ color: '#333333' }}
           >
             <MenuItem value="Customer">Customer</MenuItem>
             <MenuItem value="Worker">Worker</MenuItem>
@@ -154,18 +150,40 @@ const Register = ({ setAuth }) => {
 
         <Button
           fullWidth
-          variant="contained"
-          color="primary"
           type="submit"
           disabled={loading}
-          sx={{ mt: 2 }}
+          sx={{
+            mt: 2,
+            backgroundColor: '#333333',
+            color: '#ffffff',
+            fontWeight: 'bold',
+            borderRadius: '8px',
+            py: 1.5,
+            '&:hover': {
+              backgroundColor: '#555555',
+            },
+            '&:active': {
+              transform: 'scale(0.98)',
+            },
+          }}
         >
-          {loading ? <CircularProgress size={24} /> : 'Register'}
+          {loading ? <CircularProgress size={24} sx={{ color: '#ffffff' }} /> : 'Register'}
         </Button>
       </form>
 
-      <Typography variant="body2" sx={{ mt: 2 }}>
-        Already have an account? <Link href="/login">Login here</Link>
+      {/* Link to login */}
+      <Typography sx={{ mt: 2, textAlign: 'center', color: '#333333', fontSize: '14px' }}>
+        Already have an account?{' '}
+        <a 
+          href="/login" 
+          style={{
+            color: '#333333',
+            fontWeight: 'bold',
+            textDecoration: 'underline',
+          }}
+        >
+          Login here
+        </a>
       </Typography>
     </Box>
   );

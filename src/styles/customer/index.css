@@ -1,0 +1,58 @@
+.customer-dashboard {
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #ffffff;
+    color: #333333;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: width 0.3s ease;
+  }
+  
+  .sidebar.closed {
+    width: 80px; /* 👈 Collapsed small sidebar */
+  }
+  
+  /* Content area */
+  .dashboard-content {
+    flex: 1;
+    padding: 30px 50px;
+    background-color: #f5f5dc;
+    color: #333333;
+    min-height: 100vh;
+    transition: margin-left 0.3s ease; /* Smooth movement */
+  }
+  
+  /* When sidebar open */
+  .dashboard-content.sidebar-open {
+    margin-left: 250px; /* sidebar width */
+  }
+  
+  /* When sidebar closed */
+  .dashboard-content.sidebar-closed {
+    margin-left: 80px; /* collapsed sidebar width */
+  }
+  
+  .dashboard-content h1 {
+    color: #333333;
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-content p {
+    color: #555555;
+    font-size: 18px;
+    max-width: 800px;
+  }
+  

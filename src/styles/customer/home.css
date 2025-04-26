@@ -1,0 +1,137 @@
+.customer-dashboard {
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #ffffff;
+    color: #333333;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.12);
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: width 0.3s ease;
+  }
+  
+  .sidebar.closed {
+    width: 80px;
+  }
+  
+  .home-container {
+    flex: 1;
+    padding: 40px;
+    background: transparent;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .home-container.sidebar-open {
+    margin-left: 250px;
+  }
+  
+  .home-container.sidebar-closed {
+    margin-left: 80px;
+  }
+  
+  /* Content layout */
+  .home-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+  }
+  
+  /* Main card containing image + buttons */
+  .home-main-card {
+    background-color: #ffffff;
+    border-radius: 20px;
+    display: flex;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden; /* ✅ Rounded edges for both parts */
+    max-width: 900px;
+    width: 100%;
+  }
+  
+  /* Left - Image */
+  .left-section-image {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+  }
+  
+  .welcome-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Right - Actions */
+  .right-section {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .action-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333333;
+  }
+  
+  .home-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .home-buttons button {
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+  
+  .home-buttons button:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Animations */
+  .fade-in {
+    animation: fadeIn 1s ease forwards;
+  }
+  
+  .fade-in-delay {
+    animation: fadeIn 1.5s ease forwards;
+  }
+  
+  .fade-in-delay2 {
+    animation: fadeIn 2s ease forwards;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
