@@ -1,0 +1,96 @@
+.worker-dashboard {
+    display: flex !important;
+    min-height: 100vh !important;
+    background-color: #f5f5dc !important;
+  }
+  
+  .offers-container {
+    flex: 1 !important;
+    padding: 40px !important;
+    transition: margin-left 0.3s ease !important;
+  }
+  
+  .offers-container.sidebar-open {
+    margin-left: 250px !important;
+  }
+  
+  .offers-container.sidebar-closed {
+    margin-left: 80px !important;
+  }
+  
+  .page-title {
+    font-size: 32px !important;
+    font-weight: bold !important;
+    color: #333333 !important;
+    margin-bottom: 30px !important;
+  }
+  
+  .offers-list {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+    gap: 30px !important;
+  }
+  
+  .offer-card {
+    background-color: #ffffff !important;
+    border-radius: 15px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden !important;
+    transition: transform 0.3s ease !important;
+  }
+  
+  .offer-card:hover {
+    transform: translateY(-5px) !important;
+  }
+  
+  .offer-title {
+    color: #333333 !important;
+    font-weight: bold !important;
+    margin-bottom: 10px !important;
+  }
+  
+  .offer-description {
+    color: #555555 !important;
+    font-size: 16px !important;
+    margin-bottom: 10px !important;
+  }
+  
+  .offer-category {
+    font-size: 14px !important;
+    color: #777777 !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .price-section {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  
+  .price-input {
+    margin-bottom: 10px !important;
+  }
+  
+  .send-button {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    font-weight: bold !important;
+    border-radius: 8px !important;
+  }
+  
+  .send-button:hover {
+    background-color: #555555 !important;
+  }
+  
+  .contact-button {
+    color: #333333 !important;
+    border-color: #333333 !important;
+    font-weight: bold !important;
+    border-radius: 8px !important;
+  }
+  
+  .contact-button:hover {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+  }
+  

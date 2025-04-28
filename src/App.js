@@ -5,15 +5,28 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Login from "./components/Login";
-import Register from "./components/Register";
 import { Box } from "@mui/material";
 
-// Imports Customer pages
-import Home from "./components/customer/home";
-import Profile from './components/customer/profile';
-import Contact from './components/customer/contact';
+// Auth pages
+import Login from "./components/login";
+import Register from "./components/Register";
 
+// Customer pages
+import Home from "./components/customer/home";
+import Profile from "./components/customer/profile";
+import Contact from "./components/customer/contact";
+
+// Worker pages
+import WorkerHome from "./components/worker/home"; 
+import WorkerIssues from "./components/worker/issues";
+import WorkerOffers from "./components/worker/offers";
+import WorkerProfile from "./components/worker/profile";
+
+// Admin pages
+import AdminHome from "./components/admin/home";
+// import AdminUsers from "./components/admin/users";
+// import AdminIssues from "./components/admin/issues";
+// import AdminSettings from "./components/admin/settings";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -31,7 +44,7 @@ function App() {
   const getRedirectPath = () => {
     if (userRole === "Customer") return "/customer/home";
     if (userRole === "Worker") return "/worker/home";
-    if (userRole === "Admin") return "/admin/home";
+    if (userRole === "admin") return "/admin/home";
     return "/login"; // fallback
   };
 
@@ -39,6 +52,8 @@ function App() {
     <Router>
       <Box sx={{ minHeight: "100vh" }}>
         <Routes>
+
+          {/* Auth Routes */}
           <Route
             path="/login"
             element={
@@ -49,7 +64,6 @@ function App() {
               )
             }
           />
-
           <Route
             path="/register"
             element={
@@ -61,22 +75,24 @@ function App() {
             }
           />
 
-          <Route
-            path="/customer/home"
-            element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
-          />
+          {/* Customer Routes */}
+          <Route path="/customer/home" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
+          <Route path="/customer/profile" element={isAuthenticated ? <Profile /> : <Navigate to="/login" />} />
+          <Route path="/customer/contact" element={isAuthenticated ? <Contact /> : <Navigate to="/login" />} />
 
-          <Route
-            path="/customer/profile"
-            element={isAuthenticated ? <Profile /> : <Navigate to="/login" />}
-          />
+          {/* Worker Routes */}
+          <Route path="/worker/home" element={isAuthenticated ? <WorkerHome /> : <Navigate to="/login" />} />
+          <Route path="/worker/issues" element={isAuthenticated ? <WorkerIssues /> : <Navigate to="/login" />} />
+          <Route path="/worker/offers" element={isAuthenticated ? <WorkerOffers /> : <Navigate to="/login" />} />
+          <Route path="/worker/profile" element={isAuthenticated ? <WorkerProfile /> : <Navigate to="/login" />} />
 
-          <Route
-            path="/customer/contact"
-            element={isAuthenticated ? <Contact /> : <Navigate to="/login" />}
-          />
-          {/* Later: Worker, Admin Routes */}
+          {/* Admin Routes */}
+          <Route path="/admin/home" element={isAuthenticated ? <AdminHome /> : <Navigate to="/login" />} />
+          {/* <Route path="/admin/users" element={isAuthenticated ? <AdminUsers /> : <Navigate to="/login" />} />
+          <Route path="/admin/issues" element={isAuthenticated ? <AdminIssues /> : <Navigate to="/login" />} />
+          <Route path="/admin/settings" element={isAuthenticated ? <AdminSettings /> : <Navigate to="/login" />} /> */}
 
+          {/* Default Redirect */}
           <Route
             path="/"
             element={
@@ -87,6 +103,7 @@ function App() {
               )
             }
           />
+
         </Routes>
       </Box>
     </Router>

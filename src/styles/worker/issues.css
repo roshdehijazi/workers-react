@@ -1,0 +1,107 @@
+.worker-dashboard {
+  display: flex !important;
+  min-height: 100vh !important;
+  background-color: #f5f5dc !important;
+}
+
+.issues-container {
+  flex: 1 !important;
+  padding: 50px !important;
+  transition: margin-left 0.3s ease !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+.issues-container.sidebar-open {
+  margin-left: 250px !important;
+}
+
+.issues-container.sidebar-closed {
+  margin-left: 80px !important;
+}
+
+.page-title {
+  font-size: 38px !important;
+  font-weight: bold !important;
+  color: #333333 !important;
+  margin-bottom: 40px !important;
+  text-align: center !important;
+  animation: fadeIn 1s ease !important;
+}
+
+.filter-select {
+  margin-bottom: 40px !important;
+  width: 300px !important;
+  background-color: #ffffff !important;
+  border-radius: 10px !important;
+}
+
+.MuiInputBase-root, .MuiOutlinedInput-root {
+  background-color: #ffffff !important;
+  border-radius: 10px !important;
+}
+
+.issues-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+  gap: 40px !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  animation: fadeIn 2s ease !important;
+}
+
+.issue-card {
+  background-color: #ffffff !important;
+  border-radius: 20px !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden !important;
+  transition: all 0.4s ease !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 25px !important;
+}
+
+.issue-card:hover {
+  transform: translateY(-8px) scale(1.02) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.issue-title {
+  font-size: 24px !important;
+  font-weight: bold !important;
+  color: #333333 !important;
+  margin-bottom: 12px !important;
+}
+
+.issue-description {
+  font-size: 16px !important;
+  color: #555555 !important;
+  margin-bottom: 12px !important;
+}
+
+.issue-category {
+  font-size: 14px !important;
+  color: #777777 !important;
+  margin-top: auto !important;
+}
+
+.issue-image {
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 180px !important;
+  border-radius: 15px 15px 0 0 !important;
+  margin-bottom: 15px !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

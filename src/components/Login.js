@@ -47,13 +47,13 @@ const Login = ({ setAuth, setUserRole }) => {
 
         // Redirect based on user role
         if (user.role === "Customer") {
-          navigate("/customer/index");
+          navigate("/customer/home");
         } else if (user.role === "Worker") {
-          navigate("/worker/index");
-        } else if (user.role === "Admin") {
-          navigate("/admin/index");
+          navigate("/worker/home");
+        } else if (user.role === "admin") {
+          navigate("/admin/home");
         } else {
-          navigate("/dashboard");
+          navigate("/login");
         }
       } catch (err) {
         setError(err.response?.data?.message || "Login failed");

@@ -1,0 +1,107 @@
+.worker-dashboard {
+    display: flex !important;
+    min-height: 100vh !important;
+    background-color: #f5f5dc !important;
+  }
+  
+  .profile-container {
+    flex: 1 !important;
+    padding: 40px !important;
+    background-color: #f5f5dc !important;
+    transition: margin-left 0.3s ease !important;
+  }
+  
+  .profile-container.sidebar-open {
+    margin-left: 250px !important;
+  }
+  
+  .profile-container.sidebar-closed {
+    margin-left: 80px !important;
+  }
+  
+  /* Profile Card */
+  .profile-card {
+    background-color: #ffffff !important;
+    padding: 50px 40px !important;
+    border-radius: 20px !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15) !important;
+    text-align: center !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  
+  /* Worker Icon */
+  .profile-avatar {
+    width: 120px !important;
+    height: 120px !important;
+    border-radius: 50% !important;
+    background-color: #f5f5dc !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: 20px !important;
+    font-size: 50px !important;
+    color: #333333 !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .profile-title {
+    font-size: 32px !important;
+    font-weight: bold !important;
+    margin-bottom: 20px !important;
+    color: #333333 !important;
+  }
+  
+  .profile-info {
+    width: 100% !important;
+    margin-top: 10px !important;
+    text-align: left !important;
+  }
+  
+  .profile-info p {
+    font-size: 18px !important;
+    margin: 12px 0 !important;
+    color: #555555 !important;
+  }
+  
+  /* Buttons */
+  .profile-buttons {
+    margin-top: 30px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 20px !important;
+  }
+  
+  .update-button {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    font-weight: bold !important;
+    padding: 12px 0 !important;
+    border-radius: 8px !important;
+    text-transform: none !important;
+  }
+  
+  .update-button:hover {
+    background-color: #555555 !important;
+  }
+  
+  .delete-button {
+    background-color: #cc0000 !important;
+    color: #ffffff !important;
+    font-weight: bold !important;
+    padding: 12px 0 !important;
+    border-radius: 8px !important;
+    text-transform: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
+  .delete-button:hover {
+    background-color: #990000 !important;
+    color: #ffffff !important;
+  }
+  
