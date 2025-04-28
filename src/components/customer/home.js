@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -17,12 +18,14 @@ import { styled } from "@mui/material/styles";
 import SideBar from "./sideBar";
 import "../../styles/customer/home.css";
 import photoHome from '../../assets/customer/home/photo-home.png';
+import axios from "axios";
 
 const Input = styled("input")({
   display: "none",
 });
 
 const Home = () => {
+   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [issueData, setIssueData] = useState({
@@ -31,6 +34,8 @@ const Home = () => {
     category: "",
     image: null,
   });
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -58,15 +63,42 @@ const Home = () => {
     setIssueData({ ...issueData, image: e.target.files[0] });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Submitted Issue:", issueData);
-    alert("Issue submitted successfully!");
-    handleClose();
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
+    setLoading(true);
+    setError("");
+  
+    try {
+      const formData = new FormData();
+      
+      
+      formData.append("title", issueData.title);
+      formData.append("description", issueData.description);
+      formData.append("category", issueData.category);
+
+      if (issueData.image) {
+        formData.append("image", issueData.image);
+      }
+  
+      const response = await axios.post(
+        "http://localhost:8088/issues",
+        formData
+      );
+  
+      console.log("Issue submitted successfully:", response.data);
+      alert("Issue submitted successfully!");
+      handleClose(); 
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to submit issue");
+      console.error("Error submitting issue:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleListIssues = () => {
     alert("Go to My Issues Page (later)");
+    navigate("/issues");
   };
 
   const handleListOffers = () => {
@@ -186,7 +218,7 @@ const Home = () => {
                   label="Category"
                   required
                 >
-                  <MenuItem value="Electric">Electric</MenuItem>
+                  <MenuItem value="ELECTRICAL">Electric</MenuItem>
                   <MenuItem value="Plumbing">Plumbing</MenuItem>
                   <MenuItem value="Furniture">Furniture</MenuItem>
                   <MenuItem value="Painting">Painting</MenuItem>

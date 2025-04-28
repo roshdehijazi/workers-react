@@ -15,7 +15,7 @@ import Register from "./components/Register";
 import Home from "./components/customer/home";
 import Profile from "./components/customer/profile";
 import Contact from "./components/customer/contact";
-
+import IssueList from "./components/customer/issuesList";
 // Worker pages
 import WorkerHome from "./components/worker/home"; 
 import WorkerIssues from "./components/worker/issues";
@@ -91,6 +91,7 @@ function App() {
           {/* <Route path="/admin/users" element={isAuthenticated ? <AdminUsers /> : <Navigate to="/login" />} />
           <Route path="/admin/issues" element={isAuthenticated ? <AdminIssues /> : <Navigate to="/login" />} />
           <Route path="/admin/settings" element={isAuthenticated ? <AdminSettings /> : <Navigate to="/login" />} /> */}
+          <Route path="/issues" element={<IssueList />} />
 
           {/* Default Redirect */}
           <Route
