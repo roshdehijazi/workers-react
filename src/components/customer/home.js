@@ -70,8 +70,8 @@ const Home = () => {
   
     try {
       const formData = new FormData();
-      
-      
+
+      // Required fields
       formData.append("title", issueData.title);
       formData.append("description", issueData.description);
       formData.append("category", issueData.category);
@@ -82,7 +82,10 @@ const Home = () => {
   
       const response = await axios.post(
         "http://localhost:8088/issues",
-        issueData
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
       );
   
       console.log("Issue submitted successfully:", response.data);
