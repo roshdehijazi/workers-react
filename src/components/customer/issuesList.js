@@ -20,13 +20,15 @@ const SimpleIssueList = () => {
   const [error, setError] = useState("");
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+  const user = JSON.parse(localStorage.getItem('user'));
 
   // Fetch issues from API
   useEffect(() => {
     const fetchIssues = async () => {
       try {
-        const response = await axios.get("http://localhost:8088/issues");
-        setIssues(response.data);
+        const response = await axios.get("http://localhost:8088/issues/"+user.username);
+        
+        setIssues(response.data)
         setLoading(false);
       } catch (err) {
         setError("Failed to load issues");
