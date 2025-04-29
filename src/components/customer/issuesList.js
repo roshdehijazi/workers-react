@@ -21,7 +21,7 @@ const SimpleIssueList = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
   const user = JSON.parse(localStorage.getItem('user'));
-  //update issuesList
+
   // Fetch issues from API
   useEffect(() => {
     const fetchIssues = async () => {

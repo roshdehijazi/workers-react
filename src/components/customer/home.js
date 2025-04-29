@@ -19,7 +19,7 @@ import SideBar from "./sideBar";
 import "../../styles/customer/home.css";
 import photoHome from '../../assets/customer/home/photo-home.png';
 import axios from "axios";
-//update home.js
+
 const Input = styled("input")({
   display: "none",
 });
