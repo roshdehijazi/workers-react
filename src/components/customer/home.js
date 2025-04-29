@@ -75,9 +75,11 @@ const Home = () => {
       formData.append("category", issueData.category);
 
       // Required backend fields
-      const customerId = localStorage.getItem("userId");
+      const user = JSON.parse(localStorage.getItem('user'));
+      const customerId=user.username;
       formData.append("customerId", customerId);
       formData.append("startDate", new Date().toISOString());
+      
 
       if (issueData.image) {
         formData.append("image", issueData.image);
