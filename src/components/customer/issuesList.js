@@ -20,12 +20,10 @@ const SimpleIssueList = () => {
   const [error, setError] = useState("");
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
-<<<<<<< HEAD
-  const user = JSON.parse(localStorage.getItem("user"));
-=======
+
   const user = JSON.parse(localStorage.getItem('user'));
 
->>>>>>> 400643a3b5e339c387888975ac68a7ba116706bc
+
   // Fetch issues from API
   useEffect(() => {
     const fetchIssues = async () => {
