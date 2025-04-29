@@ -70,10 +70,14 @@ const Home = () => {
 
     try {
       const formData = new FormData();
-
       formData.append("title", issueData.title);
       formData.append("description", issueData.description);
       formData.append("category", issueData.category);
+
+      // Required backend fields
+      const customerId = localStorage.getItem("userId");
+      formData.append("customerId", customerId);
+      formData.append("startDate", new Date().toISOString());
 
       if (issueData.image) {
         formData.append("image", issueData.image);
@@ -81,7 +85,12 @@ const Home = () => {
 
       const response = await axios.post(
         "http://localhost:8088/issues",
-        issueData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       console.log("Issue submitted successfully:", response.data);
