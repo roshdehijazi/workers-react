@@ -17,7 +17,7 @@ import {
 import { styled } from "@mui/material/styles";
 import SideBar from "./sideBar";
 import "../../styles/customer/home.css";
-import photoHome from '../../assets/customer/home/photo-home.png';
+import photoHome from "../../assets/customer/home/photo-home.png";
 import axios from "axios";
 
 const Input = styled("input")({
@@ -25,7 +25,7 @@ const Input = styled("input")({
 });
 
 const Home = () => {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [issueData, setIssueData] = useState({
@@ -34,8 +34,8 @@ const Home = () => {
     category: "",
     image: null,
   });
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -64,14 +64,13 @@ const Home = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     setLoading(true);
     setError("");
-  
+
     try {
       const formData = new FormData();
-      
-      
+
       formData.append("title", issueData.title);
       formData.append("description", issueData.description);
       formData.append("category", issueData.category);
@@ -79,15 +78,15 @@ const Home = () => {
       if (issueData.image) {
         formData.append("image", issueData.image);
       }
-  
+
       const response = await axios.post(
         "http://localhost:8088/issues",
         formData
       );
-  
+
       console.log("Issue submitted successfully:", response.data);
       alert("Issue submitted successfully!");
-      handleClose(); 
+      handleClose();
     } catch (err) {
       setError(err.response?.data?.message || "Failed to submit issue");
       console.error("Error submitting issue:", err);
@@ -97,8 +96,7 @@ const Home = () => {
   };
 
   const handleListIssues = () => {
-    alert("Go to My Issues Page (later)");
-    navigate("/issues");
+    navigate("../customer/issuesList");
   };
 
   const handleListOffers = () => {
@@ -115,74 +113,73 @@ const Home = () => {
         }`}
       >
         <Box className="home-content">
-  <Box className="home-main-card fade-in-delay">
-    {/* Left - Image */}
-    <Box className="left-section-image">
-    <img src={photoHome} alt="Welcome" className="welcome-image" />
-    </Box>
+          <Box className="home-main-card fade-in-delay">
+            {/* Left - Image */}
+            <Box className="left-section-image">
+              <img src={photoHome} alt="Welcome" className="welcome-image" />
+            </Box>
 
-    {/* Right - Buttons */}
-    <Box className="right-section">
-      <Typography className="action-title">Quick Actions</Typography>
+            {/* Right - Buttons */}
+            <Box className="right-section">
+              <Typography className="action-title">Quick Actions</Typography>
 
-      <Box className="home-buttons">
-        <Button
-          variant="contained"
-          onClick={handleClickOpen}
-          sx={{
-            backgroundColor: "#333333",
-            color: "#ffffff",
-            fontWeight: "bold",
-            fontSize: "18px",
-            borderRadius: "10px",
-            '&:hover': {
-              backgroundColor: "#555555",
-            }
-          }}
-        >
-          Put Issue
-        </Button>
+              <Box className="home-buttons">
+                <Button
+                  variant="contained"
+                  onClick={handleClickOpen}
+                  sx={{
+                    backgroundColor: "#333333",
+                    color: "#ffffff",
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    borderRadius: "10px",
+                    "&:hover": {
+                      backgroundColor: "#555555",
+                    },
+                  }}
+                >
+                  Put Issue
+                </Button>
 
-        <Button
-          variant="outlined"
-          onClick={handleListIssues}
-          sx={{
-            color: "#333333",
-            borderColor: "#333333",
-            fontWeight: "bold",
-            fontSize: "18px",
-            borderRadius: "10px",
-            '&:hover': {
-              backgroundColor: "#333333",
-              color: "#ffffff",
-            }
-          }}
-        >
-          List My Issues
-        </Button>
+                <Button
+                  variant="outlined"
+                  onClick={handleListIssues}
+                  sx={{
+                    color: "#333333",
+                    borderColor: "#333333",
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    borderRadius: "10px",
+                    "&:hover": {
+                      backgroundColor: "#333333",
+                      color: "#ffffff",
+                    },
+                  }}
+                >
+                  List My Issues
+                </Button>
 
-        <Button
-          variant="outlined"
-          onClick={handleListOffers}
-          sx={{
-            color: "#333333",
-            borderColor: "#333333",
-            fontWeight: "bold",
-            fontSize: "18px",
-            borderRadius: "10px",
-            '&:hover': {
-              backgroundColor: "#333333",
-              color: "#ffffff",
-            }
-          }}
-        >
-          List My Offers
-        </Button>
-      </Box>
-    </Box>
-  </Box>
-</Box>
-
+                <Button
+                  variant="outlined"
+                  onClick={handleListOffers}
+                  sx={{
+                    color: "#333333",
+                    borderColor: "#333333",
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    borderRadius: "10px",
+                    "&:hover": {
+                      backgroundColor: "#333333",
+                      color: "#ffffff",
+                    },
+                  }}
+                >
+                  List My Offers
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
 
         {/* Dialog for Putting Issue */}
         <Dialog open={openDialog} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -258,7 +255,6 @@ const Home = () => {
             </form>
           </DialogContent>
         </Dialog>
-
       </Box>
     </div>
   );

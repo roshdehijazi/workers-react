@@ -17,7 +17,7 @@ import Profile from "./components/customer/profile";
 import Contact from "./components/customer/contact";
 import IssueList from "./components/customer/issuesList";
 // Worker pages
-import WorkerHome from "./components/worker/home"; 
+import WorkerHome from "./components/worker/home";
 import WorkerIssues from "./components/worker/issues";
 import WorkerOffers from "./components/worker/offers";
 import WorkerProfile from "./components/worker/profile";
@@ -52,7 +52,6 @@ function App() {
     <Router>
       <Box sx={{ minHeight: "100vh" }}>
         <Routes>
-
           {/* Auth Routes */}
           <Route
             path="/login"
@@ -76,18 +75,54 @@ function App() {
           />
 
           {/* Customer Routes */}
-          <Route path="/customer/home" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
-          <Route path="/customer/profile" element={isAuthenticated ? <Profile /> : <Navigate to="/login" />} />
-          <Route path="/customer/contact" element={isAuthenticated ? <Contact /> : <Navigate to="/login" />} />
+          <Route
+            path="/customer/home"
+            element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/customer/profile"
+            element={isAuthenticated ? <Profile /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/customer/contact"
+            element={isAuthenticated ? <Contact /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/customer/issuesList"
+            element={isAuthenticated ? <IssueList /> : <Navigate to="/login" />}
+          />
 
           {/* Worker Routes */}
-          <Route path="/worker/home" element={isAuthenticated ? <WorkerHome /> : <Navigate to="/login" />} />
-          <Route path="/worker/issues" element={isAuthenticated ? <WorkerIssues /> : <Navigate to="/login" />} />
-          <Route path="/worker/offers" element={isAuthenticated ? <WorkerOffers /> : <Navigate to="/login" />} />
-          <Route path="/worker/profile" element={isAuthenticated ? <WorkerProfile /> : <Navigate to="/login" />} />
+          <Route
+            path="/worker/home"
+            element={
+              isAuthenticated ? <WorkerHome /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/worker/issues"
+            element={
+              isAuthenticated ? <WorkerIssues /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/worker/offers"
+            element={
+              isAuthenticated ? <WorkerOffers /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/worker/profile"
+            element={
+              isAuthenticated ? <WorkerProfile /> : <Navigate to="/login" />
+            }
+          />
 
           {/* Admin Routes */}
-          <Route path="/admin/home" element={isAuthenticated ? <AdminHome /> : <Navigate to="/login" />} />
+          <Route
+            path="/admin/home"
+            element={isAuthenticated ? <AdminHome /> : <Navigate to="/login" />}
+          />
           {/* <Route path="/admin/users" element={isAuthenticated ? <AdminUsers /> : <Navigate to="/login" />} />
           <Route path="/admin/issues" element={isAuthenticated ? <AdminIssues /> : <Navigate to="/login" />} />
           <Route path="/admin/settings" element={isAuthenticated ? <AdminSettings /> : <Navigate to="/login" />} /> */}
@@ -104,7 +139,6 @@ function App() {
               )
             }
           />
-
         </Routes>
       </Box>
     </Router>
