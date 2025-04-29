@@ -71,9 +71,15 @@ const Home = () => {
     try {
       const formData = new FormData();
 
+      // Required fields
       formData.append("title", issueData.title);
       formData.append("description", issueData.description);
       formData.append("category", issueData.category);
+
+      // 👇 Add missing backend-required fields
+      const customerId = localStorage.getItem("userId"); // or wherever you store it
+      formData.append("customerId", customerId);
+      formData.append("startDate", new Date().toISOString());
 
       if (issueData.image) {
         formData.append("image", issueData.image);
@@ -81,7 +87,10 @@ const Home = () => {
 
       const response = await axios.post(
         "http://localhost:8088/issues",
-        formData
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
       );
 
       console.log("Issue submitted successfully:", response.data);
