@@ -16,11 +16,13 @@ import Home from "./components/customer/home";
 import Profile from "./components/customer/profile";
 import Contact from "./components/customer/contact";
 import IssueList from "./components/customer/issuesList";
+import OffersList from "./components/customer/listMyOffers";
 // Worker pages
 import WorkerHome from "./components/worker/home";
 import WorkerIssues from "./components/worker/issues";
 import WorkerOffers from "./components/worker/offers";
 import WorkerProfile from "./components/worker/profile";
+import Help from "./components/worker/help";
 
 // Admin pages
 import AdminHome from "./components/admin/home";
@@ -91,6 +93,12 @@ function App() {
             path="/customer/issuesList"
             element={isAuthenticated ? <IssueList /> : <Navigate to="/login" />}
           />
+          <Route
+            path="/customer/listMyOffers"
+            element={
+              isAuthenticated ? <OffersList /> : <Navigate to="/login" />
+            }
+          />
 
           {/* Worker Routes */}
           <Route
@@ -117,6 +125,10 @@ function App() {
               isAuthenticated ? <WorkerProfile /> : <Navigate to="/login" />
             }
           />
+          <Route
+            path="/worker/help"
+            element={isAuthenticated ? <Help /> : <Navigate to="/login" />}
+          />
 
           {/* Admin Routes */}
           <Route
@@ -126,7 +138,6 @@ function App() {
           {/* <Route path="/admin/users" element={isAuthenticated ? <AdminUsers /> : <Navigate to="/login" />} />
           <Route path="/admin/issues" element={isAuthenticated ? <AdminIssues /> : <Navigate to="/login" />} />
           <Route path="/admin/settings" element={isAuthenticated ? <AdminSettings /> : <Navigate to="/login" />} /> */}
-         
 
           {/* Default Redirect */}
           <Route

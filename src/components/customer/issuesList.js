@@ -13,25 +13,25 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import SideBar from "./sideBar";
+import "../../styles/customer/issuesList.css";
 
 const SimpleIssueList = () => {
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isSidebarOpen, setSidebarOpen] = useState(true);
+
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem("user"));
+  const username = user?.username;
 
-
-  // Fetch issues from API
   useEffect(() => {
     const fetchIssues = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8088/issues/" + user.username
+          `http://localhost:8088/issues/${username}`
         );
-
         setIssues(response.data);
         setLoading(false);
       } catch (err) {
@@ -41,8 +41,10 @@ const SimpleIssueList = () => {
       }
     };
 
-    fetchIssues();
-  }, []);
+    if (username) {
+      fetchIssues();
+    }
+  }, [username]);
 
   const getCategoryColor = (category) => {
     switch (category) {
@@ -61,7 +63,7 @@ const SimpleIssueList = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+      <Box className="loading-box">
         <CircularProgress />
       </Box>
     );
@@ -69,7 +71,7 @@ const SimpleIssueList = () => {
 
   if (error) {
     return (
-      <Box sx={{ textAlign: "center", mt: 4 }}>
+      <Box className="error-box">
         <Typography color="error">{error}</Typography>
         <Button variant="contained" onClick={() => window.location.reload()}>
           Retry
@@ -86,27 +88,16 @@ const SimpleIssueList = () => {
         className={`home-container ${
           isSidebarOpen ? "sidebar-open" : "sidebar-closed"
         }`}
-        sx={{ p: 3 }}
       >
-        <Typography
-          variant="h4"
-          gutterBottom
-          sx={{ fontWeight: "bold", mb: 3 }}
-        >
+        <Typography variant="h4" className="issues-title">
           Reported Issues
         </Typography>
 
         {issues.length > 0 ? (
-          <Grid container spacing={3}>
+          <Grid container spacing={3} className="issues-grid">
             {issues.map((issue) => (
               <Grid item xs={12} sm={6} md={4} key={issue.id}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
+                <Card className="issue-card">
                   {issue.picture && (
                     <CardMedia
                       component="img"
@@ -115,18 +106,14 @@ const SimpleIssueList = () => {
                       alt={issue.title}
                     />
                   )}
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h6" component="div">
+                  <CardContent>
+                    <Typography gutterBottom variant="h6">
                       {issue.title}
                     </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 2 }}
-                    >
+                    <Typography variant="body2" color="text.secondary">
                       {issue.description}
                     </Typography>
-                    <Box sx={{ display: "flex", gap: 1 }}>
+                    <Box className="chip-container">
                       <Chip
                         label={issue.category}
                         color={getCategoryColor(issue.category)}
@@ -139,7 +126,7 @@ const SimpleIssueList = () => {
                       />
                     </Box>
                   </CardContent>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography className="issue-date">
                     {new Date(issue.startDate).toLocaleDateString()}
                   </Typography>
                   <CardActions>

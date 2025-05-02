@@ -11,9 +11,12 @@ const AdminSideBar = () => {
 
   useEffect(() => {
     if (location.pathname.startsWith("/admin/home")) setActiveItem("Home");
-    else if (location.pathname.startsWith("/admin/users")) setActiveItem("Manage Users");
-    else if (location.pathname.startsWith("/admin/issues")) setActiveItem("Manage Issues");
-    else if (location.pathname.startsWith("/admin/settings")) setActiveItem("Settings");
+    else if (location.pathname.startsWith("/admin/users"))
+      setActiveItem("Manage Users");
+    else if (location.pathname.startsWith("/admin/issues"))
+      setActiveItem("Manage Issues");
+    else if (location.pathname.startsWith("/admin/settings"))
+      setActiveItem("Settings");
   }, [location.pathname]);
 
   const toggleSidebar = () => {

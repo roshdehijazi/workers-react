@@ -1,0 +1,14 @@
+.worker-dashboard {
+    display: flex;
+  }
+  
+  .help-container.sidebar-open {
+    margin-left: 250px;
+    transition: margin 0.3s ease-in-out;
+  }
+  
+  .help-container.sidebar-closed {
+    margin-left: 60px;
+    transition: margin 0.3s ease-in-out;
+  }
+  

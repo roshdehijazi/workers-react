@@ -75,11 +75,10 @@ const Home = () => {
       formData.append("category", issueData.category);
 
       // Required backend fields
-      const user = JSON.parse(localStorage.getItem('user'));
-      const customerId=user.username;
+      const user = JSON.parse(localStorage.getItem("user"));
+      const customerId = user.username;
       formData.append("customerId", customerId);
       formData.append("startDate", new Date().toISOString());
-      
 
       if (issueData.image) {
         formData.append("image", issueData.image);
@@ -111,7 +110,7 @@ const Home = () => {
   };
 
   const handleListOffers = () => {
-    alert("Go to My Offers Page (later)");
+    navigate("../customer/listMyOffers");
   };
 
   return (

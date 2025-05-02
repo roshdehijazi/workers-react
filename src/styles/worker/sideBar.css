@@ -1,102 +1,125 @@
-.sidebar {
-    width: 250px;
-    background-color: #ffffff !important;
-    color: #333333 !important;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    left: 0;
-    transition: width 0.3s ease;
-  }
-  
-  .sidebar.closed {
-    width: 80px;
-  }
-  
-  .toggle-btn {
-    background: none;
-    border: none;
-    margin: 16px;
-    cursor: pointer;
-  }
-  
-  .hamburger-icon div {
-    width: 25px;
-    height: 3px;
-    background-color: #333333 !important;
-    margin: 5px 0;
-  }
-  
-  .sidebar-content {
-    flex: 1;
-    padding: 20px;
-    overflow-x: hidden;
-  }
-  
-  .sidebar-content h2 {
-    font-size: 18px !important;
-    font-weight: bold !important;
-    margin-bottom: 20px;
-    color: #333333 !important;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  li {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  li .menu-item-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #333333 !important;
-    transition: color 0.3s;
-  }
-  
-  li:hover {
-    background-color: #f5f5dc !important;
-  }
-  
-  li.active {
-    background-color: #f5f5dc !important;
-    border-left: 5px solid #333333 !important;
-  }
-  
-  li.active .menu-item-content {
-    color: #111111 !important;
-    font-weight: bold !important;
-  }
-  
-  .icon {
-    font-size: 20px !important;
-    color: #333333 !important;
-  }
-  
-  .text {
-    font-size: 16px !important;
-    color: #333333 !important;
-  }
-  
-  .sidebar-loading {
-    background-color: #f5f5dc !important;
-    color: #333333 !important;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
+.worker-sidebar {
+  width: 250px;
+  background-color: #ffffff;
+  color: #333333;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: width 0.3s ease;
+}
+
+.worker-sidebar.closed {
+  width: 80px;
+}
+
+/* Toggle button */
+.worker-sidebar .toggle-btn {
+  background: none;
+  border: none;
+  margin: 16px;
+  cursor: pointer;
+}
+
+.worker-sidebar .hamburger-icon div {
+  width: 25px;
+  height: 3px;
+  background-color: #333;
+  margin: 5px 0;
+}
+
+/* Sidebar content */
+.worker-sidebar .sidebar-content {
+  flex: 1;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+.worker-sidebar .sidebar-content h2 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Menu styling */
+.worker-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.worker-sidebar li {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background-color: #2d2d2d;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.worker-sidebar li:hover {
+  background-color: #444;
+}
+
+.worker-sidebar li.active {
+  background-color: #f5f5dc;
+  border-left: 5px solid #333;
+  color: #111;
+}
+
+.worker-sidebar li.active .menu-item-content {
+  color: #111;
+  font-weight: bold;
+}
+
+/* Icon and text */
+.worker-sidebar .menu-item-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.worker-sidebar .icon {
+  font-size: 18px;
+  color: inherit;
+}
+
+.worker-sidebar .text {
+  font-size: 16px;
+  color: inherit;
+}
+
+/* Loading state */
+.worker-sidebar .sidebar-loading {
+  background-color: #f5f5dc;
+  color: #333;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* LogOut button */
+.worker-sidebar .logout-button {
+  background-color: #333;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 20px;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.worker-sidebar .logout-button:hover {
+  background-color: #555;
+}

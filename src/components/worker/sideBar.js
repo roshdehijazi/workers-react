@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { FaHome, FaWrench, FaBell, FaCog } from "react-icons/fa";
+import {
+  FaHome,
+  FaWrench,
+  FaBell,
+  FaCog,
+  FaQuestionCircle,
+} from "react-icons/fa";
 import { Button } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../../styles/worker/sideBar.css";
@@ -13,9 +19,12 @@ const WorkerSideBar = ({ isOpen, toggleSidebar }) => {
 
   useEffect(() => {
     if (location.pathname.startsWith("/worker/home")) setActiveItem("Home");
-    else if (location.pathname.startsWith("/worker/issues")) setActiveItem("Available Issues");
-    else if (location.pathname.startsWith("/worker/offers")) setActiveItem("My Offers");
-    else if (location.pathname.startsWith("/worker/profile")) setActiveItem("Profile");
+    else if (location.pathname.startsWith("/worker/issues"))
+      setActiveItem("Available Issues");
+    else if (location.pathname.startsWith("/worker/offers"))
+      setActiveItem("My Offers");
+    else if (location.pathname.startsWith("/worker/profile"))
+      setActiveItem("Profile");
   }, [location.pathname]);
 
   const handleLogout = () => {
@@ -30,12 +39,13 @@ const WorkerSideBar = ({ isOpen, toggleSidebar }) => {
     { name: "Available Issues", icon: <FaWrench />, path: "/worker/issues" },
     { name: "My Offers", icon: <FaBell />, path: "/worker/offers" },
     { name: "Profile", icon: <FaCog />, path: "/worker/profile" },
+    { name: "Help", icon: <FaQuestionCircle />, path: "/worker/help" },
   ];
 
   if (!user) return <div className="sidebar-loading">Loading...</div>;
 
   return (
-    <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
+    <div className={`sidebar worker-sidebar ${isOpen ? "open" : "closed"}`}>
       {/* Toggle button */}
       <button className="toggle-btn" onClick={toggleSidebar}>
         <div className="hamburger-icon">
@@ -68,20 +78,7 @@ const WorkerSideBar = ({ isOpen, toggleSidebar }) => {
         </ul>
 
         {isOpen && (
-          <Button
-            fullWidth
-            onClick={handleLogout}
-            sx={{
-              mt: 2,
-              backgroundColor: "#333333",
-              color: "#ffffff",
-              fontWeight: "bold",
-              borderRadius: "8px",
-              "&:hover": {
-                backgroundColor: "#555555",
-              },
-            }}
-          >
+          <Button fullWidth className="logout-button" onClick={handleLogout}>
             LogOut
           </Button>
         )}
