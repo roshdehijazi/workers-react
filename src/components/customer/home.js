@@ -28,12 +28,14 @@ const Home = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [issueData, setIssueData] = useState({
     title: "",
     description: "",
     category: "",
     image: null,
   });
+  
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -95,7 +97,8 @@ const Home = () => {
       );
 
       console.log("Issue submitted successfully:", response.data);
-      alert("Issue submitted successfully!");
+      setSuccessMessage("Issue submitted successfully!");
+      setTimeout(() => setSuccessMessage(""), 4000);
       handleClose();
     } catch (err) {
       setError(err.response?.data?.message || "Failed to submit issue");
@@ -122,6 +125,15 @@ const Home = () => {
           isSidebarOpen ? "sidebar-open" : "sidebar-closed"
         }`}
       >
+        {successMessage && (
+          <div className="notification">
+            <span>{successMessage}</span>
+            <button className="close-btn" onClick={() => setSuccessMessage("")}>
+              ×
+            </button>
+          </div>
+        )}
+
         <Box className="home-content">
           <Box className="home-main-card fade-in-delay">
             {/* Left - Image */}

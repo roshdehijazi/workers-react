@@ -17,6 +17,7 @@ import Profile from "./components/customer/profile";
 import Contact from "./components/customer/contact";
 import IssueList from "./components/customer/issuesList";
 import OffersList from "./components/customer/listMyOffers";
+import FindWorker from "./components/customer/find-worker";
 // Worker pages
 import WorkerHome from "./components/worker/home";
 import WorkerIssues from "./components/worker/issues";
@@ -97,6 +98,12 @@ function App() {
             path="/customer/listMyOffers"
             element={
               isAuthenticated ? <OffersList /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/customer/find-worker"
+            element={
+              isAuthenticated ? <FindWorker /> : <Navigate to="/login" />
             }
           />
 

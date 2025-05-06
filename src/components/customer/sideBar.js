@@ -13,7 +13,7 @@ import "../../styles/customer/sideBar.css";
 // ✅ Move menuItems OUTSIDE the component
 const menuItems = [
   { name: "Home", icon: <FaHome />, path: "/customer/home" },
-  { name: "Find Worker", icon: <FaSearch />, path: "/find-worker" },
+  { name: "Find Worker", icon: <FaSearch />, path: "/customer/find-worker" },
   { name: "Profile", icon: <FaCog />, path: "/customer/profile" },
   { name: "Contact", icon: <FaQuestionCircle />, path: "/customer/contact" },
 ];
