@@ -45,15 +45,28 @@ const Register = () => {
 
     setLoading(true);
     try {
-      await fetch("http://localhost:8088/users", {
+      const response = await fetch("http://localhost:8088/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        if (response.status === 409 || errorText.includes("E11000")) {
+          setServerError(
+            "Username Or Email is already exists. Please choose another."
+          );
+        } else {
+          setServerError("Registration failed. Please try again.");
+        }
+        return;
+      }
+
       alert("Registration successful! Please login.");
       navigate("/login");
     } catch (err) {
-      setServerError("Registration failed. Please try again.");
+      setServerError("Server error. Please try again later.");
     } finally {
       setLoading(false);
     }
