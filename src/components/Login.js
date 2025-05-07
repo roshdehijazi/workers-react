@@ -1,159 +1,101 @@
 import React, { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  Box,
-  Typography,
-  Alert,
-  CircularProgress,
-} from "@mui/material";
-import "../styles/Login&Register.css";
+import "../styles/login.css";
+import loginImage from "../assets/main/login/login-image.png";
 
 const Login = ({ setAuth, setUserRole }) => {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
+  const [values, setValues] = useState({ username: "", password: "" });
+  const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const formik = useFormik({
-    initialValues: {
-      username: "",
-      password: "",
-    },
-    validationSchema: Yup.object({
-      username: Yup.string().required("Username is required"),
-      password: Yup.string().required("Password is required"),
-    }),
-    onSubmit: async (values) => {
-      setLoading(true);
-      setError("");
-      try {
-        const response = await axios.post(
-          "http://localhost:8088/auth/login",
-          values
-        );
-        const user = response.data.user;
+  const validate = () => {
+    const err = {};
+    if (!values.username.trim()) err.username = "Username is required";
+    if (!values.password.trim()) err.password = "Password is required";
+    return err;
+  };
 
-        console.log("User object:", user);
+  const handleChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
+    setServerError("");
+  };
 
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(user));
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
-        setAuth(true);
-        setUserRole(user.role);
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:8088/auth/login",
+        values
+      );
+      const user = response.data.user;
 
-        // Redirect based on user role
-        if (user.role === "Customer") {
-          navigate("/customer/home");
-        } else if (user.role === "Worker") {
-          navigate("/worker/home");
-        } else if (user.role === "admin") {
-          navigate("/admin/home");
-        } else {
-          navigate("/login");
-        }
-      } catch (err) {
-        setError(err.response?.data?.message || "Login failed");
-      } finally {
-        setLoading(false);
-      }
-    },
-  });
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(user));
+      setAuth(true);
+      setUserRole(user.role);
+
+      if (user.role === "Customer") navigate("/customer/home");
+      else if (user.role === "Worker") navigate("/worker/home");
+      else if (user.role === "admin") navigate("/admin/home");
+      else navigate("/login");
+    } catch (err) {
+      setServerError(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <Box className="login-box">
-      <Typography
-        sx={{
-          color: "#333333",
-          textAlign: "center",
-          fontSize: "32px",
-          fontWeight: "bold",
-          mb: 3,
-        }}
-      >
-        Login
-      </Typography>
+    <div className="login-wrapper">
+      <div className="login-image-side">
+        <img src={loginImage} alt="Welcome" />
+      </div>
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
+      <div className="login-form-side">
+        <form className="login-form" onSubmit={handleSubmit}>
+          <h2>Login</h2>
 
-      <form onSubmit={formik.handleSubmit}>
-        <TextField
-          fullWidth
-          id="username"
-          name="username"
-          label="Username"
-          value={formik.values.username}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.username && Boolean(formik.errors.username)}
-          helperText={formik.touched.username && formik.errors.username}
-          margin="normal"
-        />
+          {serverError && <div className="error">{serverError}</div>}
 
-        <TextField
-          fullWidth
-          id="password"
-          name="password"
-          label="Password"
-          type="password"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-          margin="normal"
-        />
+          <label>Username</label>
+          <input
+            type="text"
+            name="username"
+            value={values.username}
+            onChange={handleChange}
+          />
+          {errors.username && <div className="error">{errors.username}</div>}
 
-        <Button
-          fullWidth
-          type="submit"
-          disabled={loading}
-          sx={{
-            mt: 2,
-            backgroundColor: "#333333",
-            color: "#ffffff",
-            fontWeight: "bold",
-            borderRadius: "8px",
-            py: 1.5,
-            "&:hover": {
-              backgroundColor: "#555555",
-            },
-            "&:active": {
-              transform: "scale(0.98)",
-            },
-          }}
-        >
-          {loading ? (
-            <CircularProgress size={24} sx={{ color: "#ffffff" }} />
-          ) : (
-            "Login"
-          )}
-        </Button>
-      </form>
+          <label>Password</label>
+          <input
+            type="password"
+            name="password"
+            value={values.password}
+            onChange={handleChange}
+          />
+          {errors.password && <div className="error">{errors.password}</div>}
 
-      <Typography
-        sx={{ mt: 2, textAlign: "center", color: "#333333", fontSize: "14px" }}
-      >
-        Don't have an account?{" "}
-        <a
-          href="/register"
-          style={{
-            color: "#333333",
-            fontWeight: "bold",
-            textDecoration: "underline",
-          }}
-        >
-          Register here
-        </a>
-      </Typography>
-    </Box>
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+
+          <p className="register-link">
+            Don't have an account? <a href="/register">Register here</a>
+          </p>
+        </form>
+      </div>
+    </div>
   );
 };
 

@@ -9,7 +9,7 @@ import { Box } from "@mui/material";
 
 // Auth pages
 import Login from "./components/login";
-import Register from "./components/Register";
+import Register from "./components/register";
 
 // Customer pages
 import Home from "./components/customer/home";

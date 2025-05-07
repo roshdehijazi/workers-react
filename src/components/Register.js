@@ -1,191 +1,135 @@
-import React, { useState } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import {
-  TextField,
-  Button,
-  Box,
-  Typography,
-  Alert,
-  CircularProgress,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel
-} from '@mui/material';
-import '../styles/Login&Register.css'; // (we will use same Login&Register.css)
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/register.css";
 
-const Register = ({ setAuth }) => {
+const Register = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "Customer",
+  });
+  const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const formik = useFormik({
-    initialValues: {
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      role: 'Customer'
-    },
-    validationSchema: Yup.object({
-      username: Yup.string().required('Username is required'),
-      email: Yup.string().email('Invalid email address').required('Email is required'),
-      password: Yup.string()
-        .min(6, 'Password must be at least 6 characters')
-        .required('Password is required'),
-      confirmPassword: Yup.string()
-        .oneOf([Yup.ref('password'), null], 'Passwords must match')
-        .required('Please confirm your password'),
-      role: Yup.string()
-        .oneOf(['Customer', 'Worker'], 'Invalid role')
-        .required('Role is required')
-    }),
-    onSubmit: async (values) => {
-      setLoading(true);
-      setError('');
-      try {
-        await axios.post('http://localhost:8088/users', values);
-        alert('Registration successful! Please login.');
-        navigate('/login');
-      } catch (err) {
-        setError(err.response?.data?.message || 'Registration failed');
-      } finally {
-        setLoading(false);
-      }
-    },
-  });
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.username.trim()) newErrors.username = "Username is required";
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Invalid email format";
+    if (!formData.password) newErrors.password = "Password is required";
+    else if (formData.password.length < 6)
+      newErrors.password = "Password must be at least 6 characters";
+    if (formData.confirmPassword !== formData.password)
+      newErrors.confirmPassword = "Passwords must match";
+    return newErrors;
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
+    setServerError("");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validation = validate();
+    if (Object.keys(validation).length > 0) {
+      setErrors(validation);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await fetch("http://localhost:8088/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      alert("Registration successful! Please login.");
+      navigate("/login");
+    } catch (err) {
+      setServerError("Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <Box className="login-box">
-      <Typography 
-        sx={{
-          color: '#333333',
-          textAlign: 'center',
-          fontSize: '32px',
-          fontWeight: 'bold',
-          mb: 3
-        }}
-      >
-        Register
-      </Typography>
+    <div className="register-container">
+      <div className="register-wrapper">
+        {/* Left Image Section */}
+        <div className="register-image">
+          <img
+            src={require("../assets/main/register/register-image.png")}
+            alt="Welcome"
+          />
+        </div>
 
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {/* Right Form Section */}
+        <form className="register-form" onSubmit={handleSubmit}>
+          <h2>Register</h2>
 
-      <form onSubmit={formik.handleSubmit}>
-        <TextField
-          fullWidth
-          id="username"
-          name="username"
-          label="Username"
-          value={formik.values.username}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.username && Boolean(formik.errors.username)}
-          helperText={formik.touched.username && formik.errors.username}
-          margin="normal"
-        />
+          {serverError && <div className="error">{serverError}</div>}
 
-        <TextField
-          fullWidth
-          id="email"
-          name="email"
-          label="Email"
-          type="email"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
-          margin="normal"
-        />
+          <label>Username</label>
+          <input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+          />
+          {errors.username && <div className="error">{errors.username}</div>}
 
-        <TextField
-          fullWidth
-          id="password"
-          name="password"
-          label="Password"
-          type="password"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-          margin="normal"
-        />
+          <label>Email</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          {errors.email && <div className="error">{errors.email}</div>}
 
-        <TextField
-          fullWidth
-          id="confirmPassword"
-          name="confirmPassword"
-          label="Confirm Password"
-          type="password"
-          value={formik.values.confirmPassword}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
-          helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
-          margin="normal"
-        />
+          <label>Password</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          {errors.password && <div className="error">{errors.password}</div>}
 
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="role-label" sx={{ color: '#333333' }}>Role</InputLabel>
-          <Select
-            labelId="role-label"
-            id="role"
-            name="role"
-            label="Role"
-            value={formik.values.role}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.role && Boolean(formik.errors.role)}
-            sx={{ color: '#333333' }}
-          >
-            <MenuItem value="Customer">Customer</MenuItem>
-            <MenuItem value="Worker">Worker</MenuItem>
-          </Select>
-        </FormControl>
+          <label>Confirm Password</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+          />
+          {errors.confirmPassword && (
+            <div className="error">{errors.confirmPassword}</div>
+          )}
 
-        <Button
-          fullWidth
-          type="submit"
-          disabled={loading}
-          sx={{
-            mt: 2,
-            backgroundColor: '#333333',
-            color: '#ffffff',
-            fontWeight: 'bold',
-            borderRadius: '8px',
-            py: 1.5,
-            '&:hover': {
-              backgroundColor: '#555555',
-            },
-            '&:active': {
-              transform: 'scale(0.98)',
-            },
-          }}
-        >
-          {loading ? <CircularProgress size={24} sx={{ color: '#ffffff' }} /> : 'Register'}
-        </Button>
-      </form>
+          <label>Role</label>
+          <select name="role" value={formData.role} onChange={handleChange}>
+            <option value="Customer">Customer</option>
+            <option value="Worker">Worker</option>
+          </select>
 
-      {/* Link to login */}
-      <Typography sx={{ mt: 2, textAlign: 'center', color: '#333333', fontSize: '14px' }}>
-        Already have an account?{' '}
-        <a 
-          href="/login" 
-          style={{
-            color: '#333333',
-            fontWeight: 'bold',
-            textDecoration: 'underline',
-          }}
-        >
-          Login here
-        </a>
-      </Typography>
-    </Box>
+          <button type="submit" disabled={loading}>
+            {loading ? "Registering..." : "Register"}
+          </button>
+
+          <p className="register-link">
+            Already have an account? <a href="/login">Login here</a>
+          </p>
+        </form>
+      </div>
+    </div>
   );
 };
 
