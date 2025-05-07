@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { FaHome, FaUsers, FaClipboardList, FaTools } from "react-icons/fa";
+import {
+  FaHome,
+  FaUsers,
+  FaClipboardList,
+  FaTools,
+  FaCommentDots,
+} from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../../styles/admin/sideBar.css";
 
@@ -11,10 +17,12 @@ const AdminSideBar = () => {
 
   useEffect(() => {
     if (location.pathname.startsWith("/admin/home")) setActiveItem("Home");
-    else if (location.pathname.startsWith("/admin/users"))
+    else if (location.pathname.startsWith("/admin/manageUsers"))
       setActiveItem("Manage Users");
-    else if (location.pathname.startsWith("/admin/issues"))
+    else if (location.pathname.startsWith("/admin/manageIssues"))
       setActiveItem("Manage Issues");
+    else if (location.pathname.startsWith("/admin/conversation"))
+      setActiveItem("Conversation");
     else if (location.pathname.startsWith("/admin/settings"))
       setActiveItem("Settings");
   }, [location.pathname]);
@@ -32,8 +40,17 @@ const AdminSideBar = () => {
 
   const menuItems = [
     { name: "Home", icon: <FaHome />, path: "/admin/home" },
-    { name: "Manage Users", icon: <FaUsers />, path: "/admin/users" },
-    { name: "Manage Issues", icon: <FaClipboardList />, path: "/admin/issues" },
+    { name: "Manage Users", icon: <FaUsers />, path: "/admin/manageUsers" },
+    {
+      name: "Manage Issues",
+      icon: <FaClipboardList />,
+      path: "/admin/manageIssues",
+    },
+    {
+      name: "Conversation",
+      icon: <FaCommentDots />,
+      path: "/admin/conversation",
+    },
     { name: "Settings", icon: <FaTools />, path: "/admin/settings" },
   ];
 

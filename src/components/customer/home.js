@@ -35,7 +35,7 @@ const Home = () => {
     category: "",
     image: null,
   });
-  
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -78,7 +78,7 @@ const Home = () => {
 
       // Required backend fields
       const user = JSON.parse(localStorage.getItem("user"));
-      const customerId = user.username;
+      const customerId = user.id;
       formData.append("customerId", customerId);
       formData.append("startDate", new Date().toISOString());
 

@@ -18,7 +18,7 @@ const SimpleIssueList = () => {
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
   const user = JSON.parse(localStorage.getItem("user"));
-  const username = user?.username;
+  const username = user.id;
 
   useEffect(() => {
     const fetchIssues = async () => {

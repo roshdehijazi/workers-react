@@ -27,9 +27,10 @@ import Help from "./components/worker/help";
 
 // Admin pages
 import AdminHome from "./components/admin/home";
-// import AdminUsers from "./components/admin/users";
-// import AdminIssues from "./components/admin/issues";
-// import AdminSettings from "./components/admin/settings";
+import AdminUsers from "./components/admin/manageUsers";
+import AdminIssues from "./components/admin/manageIssues";
+import AdminConversation from "./components/admin/conversation";
+import AdminSettings from "./components/admin/settings";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -142,9 +143,30 @@ function App() {
             path="/admin/home"
             element={isAuthenticated ? <AdminHome /> : <Navigate to="/login" />}
           />
-          {/* <Route path="/admin/users" element={isAuthenticated ? <AdminUsers /> : <Navigate to="/login" />} />
-          <Route path="/admin/issues" element={isAuthenticated ? <AdminIssues /> : <Navigate to="/login" />} />
-          <Route path="/admin/settings" element={isAuthenticated ? <AdminSettings /> : <Navigate to="/login" />} /> */}
+          <Route
+            path="/admin/manageUsers"
+            element={
+              isAuthenticated ? <AdminUsers /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/admin/manageIssues"
+            element={
+              isAuthenticated ? <AdminIssues /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/admin/conversation"
+            element={
+              isAuthenticated ? <AdminConversation /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/admin/settings"
+            element={
+              isAuthenticated ? <AdminSettings /> : <Navigate to="/login" />
+            }
+          />
 
           {/* Default Redirect */}
           <Route
