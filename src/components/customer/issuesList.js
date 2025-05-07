@@ -135,7 +135,7 @@ const SimpleIssueList = () => {
                         <span role="img" aria-label="views">
                           👁️
                         </span>{" "}
-                        {issue.viewCount || 0} views
+                        {issue.countViewrs || 0} views
                       </div>
                     </div>
 
