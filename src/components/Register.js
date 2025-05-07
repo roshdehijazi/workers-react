@@ -11,6 +11,7 @@ const Register = () => {
     confirmPassword: "",
     role: "Customer",
   });
+  const [successMessage, setSuccessMessage] = useState("");
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -63,8 +64,8 @@ const Register = () => {
         return;
       }
 
-      alert("Registration successful! Please login.");
-      navigate("/login");
+      setSuccessMessage("Registration successful! Redirecting to login...");
+      setTimeout(() => navigate("/login"), 2000); // redirect after 2 seconds
     } catch (err) {
       setServerError("Server error. Please try again later.");
     } finally {
@@ -86,7 +87,7 @@ const Register = () => {
         {/* Right Form Section */}
         <form className="register-form" onSubmit={handleSubmit}>
           <h2>Register</h2>
-
+          {successMessage && <div className="success">{successMessage}</div>}
           {serverError && <div className="error">{serverError}</div>}
 
           <label>Username</label>

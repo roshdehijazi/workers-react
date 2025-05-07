@@ -133,3 +133,13 @@
       padding: 30px 20px;
     }
   }
+  .success {
+    color: green;
+    background-color: #e7f9e7;
+    border: 1px solid #b5e3b5;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
