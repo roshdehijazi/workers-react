@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminSideBar from "./sideBar";
-import "../../styles/admin/manageUsers.css";
+import styles from "../../styles/admin/manageUsers.module.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AdminManageUsers = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -10,10 +12,8 @@ const AdminManageUsers = () => {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
-  };
-  // Fetch users on component load
+  const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -29,42 +29,66 @@ const AdminManageUsers = () => {
     }
   };
 
-  const deleteUser = async (userId) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
-
-    try {
-      await axios.delete(`http://localhost:8088/users/${userId}`);
-      setSuccessMsg("User deleted successfully.");
-      setUsers(users.filter((user) => user._id !== userId));
-    } catch (err) {
-      setError("Failed to delete user.");
-    }
+  const deleteUser = (userId) => {
+    const toastId = toast.info(
+      ({ closeToast }) => (
+        <div>
+          <strong>Are you sure you want to delete this user?</strong>
+          <div className={styles["confirm-toast-buttons"]}>
+            <button
+              className={styles["confirm-button"]}
+              onClick={async () => {
+                try {
+                  await axios.delete(`http://localhost:8088/users/${userId}`);
+                  toast.dismiss(toastId);
+                  toast.success("User deleted successfully.");
+                  setUsers(users.filter((user) => user.id !== userId));
+                } catch {
+                  toast.dismiss(toastId);
+                  toast.error("Failed to delete user.");
+                }
+              }}
+            >
+              Confirm
+            </button>
+            <button
+              className={styles["cancel-button"]}
+              onClick={() => toast.dismiss(toastId)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+      }
+    );
   };
 
   const deleteIssue = async (issueId) => {
-    if (!window.confirm("Are you sure you want to delete this issue?")) return;
-
     try {
       await axios.delete(`http://localhost:8088/issues/${issueId}`);
-      setSuccessMsg("Issue deleted successfully.");
-      // Optionally re-fetch users or issues if needed
+      toast.success("Issue deleted successfully.");
     } catch (err) {
-      setError("Failed to delete issue.");
+      toast.error("Failed to delete issue.");
     }
   };
 
   return (
-    <div className="admin-users-container">
+    <div className={styles["admin-users-container"]}>
       <AdminSideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <h2>Manage Users</h2>
 
-      {error && <div className="error">{error}</div>}
-      {successMsg && <div className="success">{successMsg}</div>}
+      {error && <div className={styles.error}>{error}</div>}
+      {successMsg && <div className={styles.success}>{successMsg}</div>}
       {loading ? (
         <p>Loading users...</p>
       ) : (
-        <table className="user-table">
+        <table className={styles["user-table"]}>
           <thead>
             <tr>
               <th>Username</th>
@@ -77,17 +101,22 @@ const AdminManageUsers = () => {
             {users
               .filter((u) => u.role !== "admin")
               .map((user) => (
-                <tr key={user._id}>
+                <tr key={user.id}>
                   <td>{user.username}</td>
                   <td>{user.email}</td>
                   <td>{user.role}</td>
                   <td>
-                    <button onClick={() => deleteUser(user._id)}>
+                    <button
+                      className={styles.button}
+                      onClick={() => deleteUser(user.id)}
+                    >
                       Delete User
                     </button>
-                    {/* Optional: if user has issueId */}
                     {user.issueId && (
-                      <button onClick={() => deleteIssue(user.issueId)}>
+                      <button
+                        className={styles.button}
+                        onClick={() => deleteIssue(user.issueId)}
+                      >
                         Delete Issue
                       </button>
                     )}
@@ -97,6 +126,7 @@ const AdminManageUsers = () => {
           </tbody>
         </table>
       )}
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

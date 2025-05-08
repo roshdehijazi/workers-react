@@ -9,6 +9,7 @@ const Login = ({ setAuth, setUserRole }) => {
   const [values, setValues] = useState({ username: "", password: "" });
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
+  const [showForgot, setShowForgot] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const validate = () => {
@@ -22,6 +23,7 @@ const Login = ({ setAuth, setUserRole }) => {
     setValues({ ...values, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
     setServerError("");
+    setShowForgot(false);
   };
 
   const handleSubmit = async (e) => {
@@ -51,6 +53,7 @@ const Login = ({ setAuth, setUserRole }) => {
       else navigate("/login");
     } catch (err) {
       setServerError(err.response?.data?.message || "Login failed");
+      setShowForgot(true); // Show forgot password link only after error
     } finally {
       setLoading(false);
     }
@@ -89,6 +92,12 @@ const Login = ({ setAuth, setUserRole }) => {
           <button type="submit" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
+
+          {showForgot && (
+            <p className="forgot-password">
+              <a href="/forgot-password">Forgot Password?</a>
+            </p>
+          )}
 
           <p className="register-link">
             Don't have an account? <a href="/register">Register here</a>

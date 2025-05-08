@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminSideBar from "./sideBar";
-import "../../styles/admin/manageIssues.css";
+import styles from "../../styles/admin/manageIssues.module.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AdminManageIssues = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [issues, setIssues] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [editingIssueId, setEditingIssueId] = useState(null);
+  const [editingIssue, setEditingIssue] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     category: "",
   });
-  const [newImageFile, setNewImageFile] = useState(null);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
-  };
 
   useEffect(() => {
     fetchIssues();
@@ -27,179 +21,151 @@ const AdminManageIssues = () => {
 
   const fetchIssues = async () => {
     try {
-      const response = await axios.get("http://localhost:8088/issues");
-      setIssues(response.data);
-    } catch (err) {
-      setError("Failed to fetch issues.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const deleteIssue = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this issue?")) return;
-
-    try {
-      await axios.delete(`http://localhost:8088/issues/${id}`);
-      setIssues(issues.filter((i) => i._id !== id));
-      setSuccess("Issue deleted successfully.");
-    } catch (err) {
-      setError("Failed to delete issue.");
+      const res = await axios.get("http://localhost:8088/issues/newer");
+      setIssues(res.data);
+    } catch {
+      toast.error("Failed to fetch issues");
     }
   };
 
   const startEdit = (issue) => {
-    setEditingIssueId(issue._id);
+    setEditingIssue(issue);
     setFormData({
       title: issue.title,
       description: issue.description,
       category: issue.category,
     });
-    setNewImageFile(null);
-    setSuccess("");
-    setError("");
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const cancelEdit = () => setEditingIssue(null);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setNewImageFile(file);
-  };
-
-  const handleUpdateAll = async () => {
-    if (!editingIssueId) return;
+  const handleUpdate = async () => {
+    const id = editingIssue?.id || editingIssue?._id;
+    if (!id) {
+      toast.error("No issue selected.");
+      return;
+    }
 
     try {
-      await axios.put(
-        `http://localhost:8088/issues/${editingIssueId}/updateTitle`,
-        { title: formData.title }
-      );
-      await axios.put(
-        `http://localhost:8088/issues/${editingIssueId}/updateDescription`,
-        { description: formData.description }
-      );
-      await axios.put(
-        `http://localhost:8088/issues/${editingIssueId}/updateCategory`,
-        { category: formData.category }
-      );
+      await axios.put(`http://localhost:8088/issues/${id}/updateTitle`, {
+        title: formData.title,
+      });
+      await axios.put(`http://localhost:8088/issues/${id}/updateDescription`, {
+        description: formData.description,
+      });
+      await axios.put(`http://localhost:8088/issues/${id}/updateCategory`, {
+        category: formData.category,
+      });
 
-      setSuccess("Issue updated successfully.");
-      setEditingIssueId(null);
+      setEditingIssue(null);
+      toast.success("Issue updated successfully", { autoClose: 2000 });
       fetchIssues();
-    } catch (err) {
-      setError("Failed to update issue.");
+    } catch {
+      toast.error("Failed to update issue");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this issue?")) return;
+
+    try {
+      await axios.delete(`http://localhost:8088/issues/${id}`);
+      setIssues(issues.filter((i) => i.id !== id));
+      toast.success("Issue deleted successfully", { autoClose: 2000 });
+    } catch {
+      toast.error("Delete failed");
     }
   };
 
   return (
-    <div
-      className={`admin-issues-container ${
-        isSidebarOpen ? "sidebar-open" : ""
-      }`}
-    >
-      <AdminSideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div className="admin-issues-content">
+    <div className={styles.wrapper}>
+      <AdminSideBar
+        isOpen={isSidebarOpen}
+        toggleSidebar={() => setSidebarOpen(!isSidebarOpen)}
+      />
+
+      <div
+        className={`${styles.content} ${
+          isSidebarOpen ? styles.sidebarOpen : ""
+        }`}
+      >
         <h2>Manage Issues</h2>
-
-        {error && <div className="error">{error}</div>}
-        {success && <div className="success">{success}</div>}
-
-        {loading ? (
-          <p>Loading issues...</p>
-        ) : (
-          <table className="issue-table">
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Actions</th>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {issues.map((issue) => (
+              <tr key={issue.id || issue._id}>
+                <td>{issue.title}</td>
+                <td>{issue.description}</td>
+                <td>{issue.category}</td>
+                <td>
+                  <button
+                    className={styles.editBtn}
+                    onClick={() => startEdit(issue)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className={styles.deleteBtn}
+                    onClick={() => handleDelete(issue.id || issue._id)}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {issues.map((issue) => (
-                <tr key={issue._id}>
-                  <td>
-                    {editingIssueId === issue._id ? (
-                      <input
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                      />
-                    ) : (
-                      issue.title
-                    )}
-                  </td>
-                  <td>
-                    {editingIssueId === issue._id ? (
-                      <textarea
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                      />
-                    ) : (
-                      issue.description
-                    )}
-                  </td>
-                  <td>
-                    {editingIssueId === issue._id ? (
-                      <select
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
-                      >
-                        <option value="FURNITURE">FURNITURE</option>
-                        <option value="ELECTRIC">ELECTRIC</option>
-                        <option value="PLUMBING">PLUMBING</option>
-                        <option value="PAINTING">PAINTING</option>
-                        <option value="OTHER">OTHER</option>
-                      </select>
-                    ) : (
-                      issue.category
-                    )}
-                  </td>
-                  <td>
-                    {editingIssueId === issue._id ? (
-                      <>
-                        <button
-                          onClick={handleUpdateAll}
-                          className="update-btn"
-                        >
-                          Update
-                        </button>
-                        <button
-                          onClick={() => setEditingIssueId(null)}
-                          className="cancel-btn"
-                        >
-                          Cancel
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => startEdit(issue)}
-                          className="edit-btn"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => deleteIssue(issue._id)}
-                          className="delete-btn"
-                        >
-                          Delete
-                        </button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
+
+        {editingIssue && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modal}>
+              <h3>Edit Issue</h3>
+              <input
+                type="text"
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+              />
+              <textarea
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+              />
+              <select
+                value={formData.category}
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value })
+                }
+              >
+                <option value="FURNITURE">FURNITURE</option>
+                <option value="ELECTRICAL">ELECTRICAL</option>
+                <option value="PLUMBING">PLUMBING</option>
+                <option value="PAINTING">PAINTING</option>
+                <option value="OTHER">OTHER</option>
+              </select>
+              <div className={styles.modalActions}>
+                <button className={styles.updateBtn} onClick={handleUpdate}>
+                  Update
+                </button>
+                <button className={styles.cancelBtn} onClick={cancelEdit}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
+      <ToastContainer position="top-right" />
     </div>
   );
 };
