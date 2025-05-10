@@ -111,9 +111,6 @@ const Home = () => {
                 <button onClick={() => navigate("../customer/issuesList")}>
                   List My Issues
                 </button>
-                <button onClick={() => navigate("../customer/listMyOffers")}>
-                  List My Offers
-                </button>
               </div>
             </div>
           </div>

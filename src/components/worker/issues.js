@@ -1,12 +1,69 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import WorkerSideBar from "./sideBar";
 import "../../styles/worker/issues.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AvailableIssues = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [issues, setIssues] = useState([]);
   const [filteredCategory, setFilteredCategory] = useState("");
   const [sortOrder, setSortOrder] = useState("newer");
+  const [showOfferDialog, setShowOfferDialog] = useState(false);
+  const [offerData, setOfferData] = useState({ price: "", description: "" });
+  const [selectedIssue, setSelectedIssue] = useState(null);
+
+  const openOfferDialog = (issue) => {
+    setSelectedIssue(issue);
+    setOfferData({ price: "", description: "" });
+    setShowOfferDialog(true);
+  };
+
+  const closeOfferDialog = () => {
+    setShowOfferDialog(false);
+    setSelectedIssue(null);
+  };
+
+  const handleOfferChange = (e) => {
+    setOfferData({ ...offerData, [e.target.name]: e.target.value });
+  };
+
+  const submitOffer = async () => {
+    try {
+      if (!offerData.description || offerData.description.trim() === "") {
+        toast.error("Description is required.");
+        return;
+      }
+      if (!offerData.price || isNaN(offerData.price) || offerData.price <= 0) {
+        toast.error("Price must be a positive number.");
+        return;
+      }
+      const worker = JSON.parse(localStorage.getItem("user"));
+      const offerLoad = {
+        ...offerData,
+        workerId: worker.id,
+        customerId: selectedIssue.customerId,
+        issueId: selectedIssue.id,
+        createdAt: new Date().toISOString(),
+      };
+
+      const res = await fetch("http://localhost:8088/offers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(offerLoad),
+      });
+      if (!res.ok) {
+        const msg = await res.text();
+        toast.error(msg || "Server rejected offer");
+        return;
+      }
+      toast.success("Offer Send successfully", { autoClose: 2000 });
+      closeOfferDialog();
+    } catch (err) {
+      console.error("Error sending offer:", err);
+      toast.error("Failed to send offer");
+    }
+  };
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -27,7 +84,6 @@ const AvailableIssues = () => {
       try {
         const res = await fetch(url);
         const data = await res.json();
-
         if (Array.isArray(data)) {
           setIssues(data);
         } else {
@@ -99,12 +155,49 @@ const AvailableIssues = () => {
                   <h3>{issue.title}</h3>
                   <p>{issue.description}</p>
                   <span className="category-tag">{issue.category}</span>
+                  <button
+                    className="send-offer-button"
+                    onClick={() => openOfferDialog(issue)}
+                  >
+                    Send Offer
+                  </button>
                 </div>
               </div>
             ))
           )}
         </div>
       </div>
+      {showOfferDialog && (
+        <div className="dialog-overlay">
+          <div className="dialog">
+            <div className="dialog-header">
+              <h3>Send Offer for: {selectedIssue.title}</h3>
+              <button onClick={closeOfferDialog}>×</button>
+            </div>
+            <input
+              type="number"
+              name="price"
+              placeholder="Offer Price"
+              value={offerData.price}
+              onChange={handleOfferChange}
+              required
+            />
+            <textarea
+              name="description"
+              placeholder="Offer Description"
+              rows="4"
+              value={offerData.description}
+              onChange={handleOfferChange}
+              required
+            />
+            <div className="dialog-actions">
+              <button onClick={closeOfferDialog}>Cancel</button>
+              <button onClick={submitOffer}>Submit Offer</button>
+            </div>
+          </div>
+        </div>
+      )}
+      <ToastContainer position="top-right" />
     </div>
   );
 };

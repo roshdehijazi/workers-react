@@ -2,15 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SideBar from "./sideBar";
 import "../../styles/customer/issuesList.css";
+import { useNavigate } from "react-router-dom";
 
 const CATEGORY_OPTIONS = ["ELECTRICAL", "PLUMBING", "FURNITURE", "PAINTING"];
 
 const SimpleIssueList = () => {
+  const navigate = useNavigate();
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isSidebarOpen, setSidebarOpen] = useState(true);
-
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editIssue, setEditIssue] = useState(null);
@@ -147,6 +148,12 @@ const SimpleIssueList = () => {
                         Delete
                       </button>
                     </div>
+                    <button
+                      className="list-offers-btn"
+                      onClick={() => navigate(`/issueOffers/${issue.id}`)}
+                    >
+                      View Offers
+                    </button>
                   </div>
                 ))}
               </div>
@@ -155,7 +162,6 @@ const SimpleIssueList = () => {
         )}
       </div>
 
-      {/* Edit Dialog */}
       {editDialogOpen && (
         <div className="overlay">
           <div className="dialog">
@@ -192,7 +198,6 @@ const SimpleIssueList = () => {
         </div>
       )}
 
-      {/* Delete Dialog */}
       {deleteDialogOpen && (
         <div className="overlay">
           <div className="dialog">
