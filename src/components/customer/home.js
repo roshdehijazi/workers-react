@@ -1,43 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Typography,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
 import SideBar from "./sideBar";
 import "../../styles/customer/home.css";
 import photoHome from "../../assets/customer/home/photo-home.png";
 import axios from "axios";
-
-const Input = styled("input")({
-  display: "none",
-});
 
 const Home = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [issueData, setIssueData] = useState({
     title: "",
     description: "",
     category: "",
     image: null,
   });
-
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -75,52 +55,32 @@ const Home = () => {
       formData.append("title", issueData.title);
       formData.append("description", issueData.description);
       formData.append("category", issueData.category);
-
-      // Required backend fields
       const user = JSON.parse(localStorage.getItem("user"));
-      const customerId = user.id;
-      formData.append("customerId", customerId);
+      formData.append("customerId", user.id);
       formData.append("startDate", new Date().toISOString());
-
       if (issueData.image) {
         formData.append("image", issueData.image);
       }
 
-      const response = await axios.post(
-        "http://localhost:8088/issues",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios.post("http://localhost:8088/issues", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-      console.log("Issue submitted successfully:", response.data);
       setSuccessMessage("Issue submitted successfully!");
       setTimeout(() => setSuccessMessage(""), 4000);
       handleClose();
     } catch (err) {
       setError(err.response?.data?.message || "Failed to submit issue");
-      console.error("Error submitting issue:", err);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleListIssues = () => {
-    navigate("../customer/issuesList");
-  };
-
-  const handleListOffers = () => {
-    navigate("../customer/listMyOffers");
   };
 
   return (
     <div className="customer-dashboard">
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-      <Box
+      <div
         className={`home-container ${
           isSidebarOpen ? "sidebar-open" : "sidebar-closed"
         }`}
@@ -134,150 +94,92 @@ const Home = () => {
           </div>
         )}
 
-        <Box className="home-content">
-          <Box className="home-main-card fade-in-delay">
-            {/* Left - Image */}
-            <Box className="left-section-image">
+        <div className="home-content">
+          <div className="home-main-card fade-in-delay">
+            <div className="left-section-image">
               <img src={photoHome} alt="Welcome" className="welcome-image" />
-            </Box>
-
-            {/* Right - Buttons */}
-            <Box className="right-section">
-              <Typography className="action-title">Quick Actions</Typography>
-
-              <Box className="home-buttons">
-                <Button
-                  variant="contained"
+            </div>
+            <div className="right-section">
+              <div className="action-title">Quick Actions</div>
+              <div className="home-buttons">
+                <button
+                  style={{ backgroundColor: "#333", color: "#fff" }}
                   onClick={handleClickOpen}
-                  sx={{
-                    backgroundColor: "#333333",
-                    color: "#ffffff",
-                    fontWeight: "bold",
-                    fontSize: "18px",
-                    borderRadius: "10px",
-                    "&:hover": {
-                      backgroundColor: "#555555",
-                    },
-                  }}
                 >
                   Put Issue
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  onClick={handleListIssues}
-                  sx={{
-                    color: "#333333",
-                    borderColor: "#333333",
-                    fontWeight: "bold",
-                    fontSize: "18px",
-                    borderRadius: "10px",
-                    "&:hover": {
-                      backgroundColor: "#333333",
-                      color: "#ffffff",
-                    },
-                  }}
-                >
+                </button>
+                <button onClick={() => navigate("../customer/issuesList")}>
                   List My Issues
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  onClick={handleListOffers}
-                  sx={{
-                    color: "#333333",
-                    borderColor: "#333333",
-                    fontWeight: "bold",
-                    fontSize: "18px",
-                    borderRadius: "10px",
-                    "&:hover": {
-                      backgroundColor: "#333333",
-                      color: "#ffffff",
-                    },
-                  }}
-                >
+                </button>
+                <button onClick={() => navigate("../customer/listMyOffers")}>
                   List My Offers
-                </Button>
-              </Box>
-            </Box>
-          </Box>
-        </Box>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        {/* Dialog for Putting Issue */}
-        <Dialog open={openDialog} onClose={handleClose} maxWidth="sm" fullWidth>
-          <DialogTitle>Submit Your Issue</DialogTitle>
-          <DialogContent>
-            <form onSubmit={handleSubmit}>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Issue Title"
-                name="title"
-                value={issueData.title}
-                onChange={handleChange}
-                required
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Description"
-                name="description"
-                value={issueData.description}
-                onChange={handleChange}
-                multiline
-                rows={4}
-                required
-              />
-              <FormControl fullWidth margin="normal">
-                <InputLabel>Category</InputLabel>
-                <Select
+        {openDialog && (
+          <div className="dialog-overlay">
+            <div className="dialog">
+              <div className="dialog-header">
+                <h3>Submit Your Issue</h3>
+                <button onClick={handleClose}>×</button>
+              </div>
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="Issue Title"
+                  value={issueData.title}
+                  onChange={handleChange}
+                  required
+                />
+                <textarea
+                  name="description"
+                  placeholder="Description"
+                  value={issueData.description}
+                  onChange={handleChange}
+                  rows="4"
+                  required
+                />
+                <select
                   name="category"
                   value={issueData.category}
                   onChange={handleChange}
-                  label="Category"
                   required
                 >
-                  <MenuItem value="ELECTRICAL">Electric</MenuItem>
-                  <MenuItem value="Plumbing">Plumbing</MenuItem>
-                  <MenuItem value="Furniture">Furniture</MenuItem>
-                  <MenuItem value="Painting">Painting</MenuItem>
-                  <MenuItem value="Other">Other</MenuItem>
-                </Select>
-              </FormControl>
-
-              <Box sx={{ mt: 2 }}>
-                <label htmlFor="upload-image">
-                  <Input
-                    accept="image/*"
-                    id="upload-image"
+                  <option value="">Select Category</option>
+                  <option value="ELECTRICAL">Electric</option>
+                  <option value="Plumbing">Plumbing</option>
+                  <option value="Furniture">Furniture</option>
+                  <option value="Painting">Painting</option>
+                  <option value="Other">Other</option>
+                </select>
+                <label className="custom-file-upload">
+                  <input
                     type="file"
+                    accept="image/*"
                     onChange={handleImageChange}
                   />
-                  <Button variant="outlined" component="span">
-                    Upload Image
-                  </Button>
+                  Choose File
                 </label>
-                {issueData.image && (
-                  <Typography sx={{ mt: 1, fontSize: "14px" }}>
-                    Selected: {issueData.image.name}
-                  </Typography>
-                )}
-              </Box>
 
-              <DialogActions sx={{ mt: 3 }}>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{ backgroundColor: "#333333", color: "#ffffff" }}
-                >
-                  Submit Issue
-                </Button>
-              </DialogActions>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </Box>
+                {issueData.image && <p>Selected: {issueData.image.name}</p>}
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                <div className="dialog-actions">
+                  <button type="button" onClick={handleClose}>
+                    Cancel
+                  </button>
+                  <button type="submit" disabled={loading}>
+                    {loading ? "Submitting..." : "Submit Issue"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

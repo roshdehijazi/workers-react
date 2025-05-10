@@ -10,7 +10,6 @@ const AdminManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
@@ -40,9 +39,9 @@ const AdminManageUsers = () => {
               onClick={async () => {
                 try {
                   await axios.delete(`http://localhost:8088/users/${userId}`);
+                  setUsers(users.filter((user) => user.id !== userId));
                   toast.dismiss(toastId);
                   toast.success("User deleted successfully.");
-                  setUsers(users.filter((user) => user.id !== userId));
                 } catch {
                   toast.dismiss(toastId);
                   toast.error("Failed to delete user.");
@@ -84,7 +83,7 @@ const AdminManageUsers = () => {
       <h2>Manage Users</h2>
 
       {error && <div className={styles.error}>{error}</div>}
-      {successMsg && <div className={styles.success}>{successMsg}</div>}
+
       {loading ? (
         <p>Loading users...</p>
       ) : (
@@ -99,7 +98,7 @@ const AdminManageUsers = () => {
           </thead>
           <tbody>
             {users
-              .filter((u) => u.role !== "admin")
+              .filter((user) => user.role !== "admin")
               .map((user) => (
                 <tr key={user.id}>
                   <td>{user.username}</td>
@@ -126,6 +125,7 @@ const AdminManageUsers = () => {
           </tbody>
         </table>
       )}
+
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
