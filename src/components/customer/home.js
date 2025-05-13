@@ -58,8 +58,9 @@ const Home = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       formData.append("customerId", user.id);
       formData.append("startDate", new Date().toISOString());
+
       if (issueData.image) {
-        formData.append("image", issueData.image);
+        formData.append("file", issueData.image); // ✅ fixed key name
       }
 
       await axios.post("http://localhost:8088/issues", formData, {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import SideBar from "./sideBar";
 import "../../styles/customer/issuesList.css";
@@ -25,7 +25,7 @@ const SimpleIssueList = () => {
     const fetchIssues = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8088/issues/${username}`
+          `http://localhost:8088/issues/customer/${username}`
         );
         setIssues(response.data);
       } catch (err) {
