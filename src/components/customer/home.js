@@ -16,7 +16,7 @@ const Home = () => {
     title: "",
     description: "",
     category: "",
-    image: null,
+    image: [],
   });
 
   const toggleSidebar = () => {
@@ -42,7 +42,11 @@ const Home = () => {
   };
 
   const handleImageChange = (e) => {
-    setIssueData({ ...issueData, image: e.target.files[0] });
+    const newFiles = Array.from(e.target.files);
+    setIssueData((prev) => ({
+      ...prev,
+      image: [...prev.image, ...newFiles],
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -59,8 +63,10 @@ const Home = () => {
       formData.append("customerId", user.id);
       formData.append("startDate", new Date().toISOString());
 
-      if (issueData.image) {
-        formData.append("file", issueData.image); // ✅ fixed key name
+      if (issueData.image && issueData.image.length > 0) {
+        Array.from(issueData.image).forEach((file) => {
+          formData.append("files", file); // important: keep same key "files"
+        });
       }
 
       await axios.post("http://localhost:8088/issues", formData, {
@@ -158,12 +164,69 @@ const Home = () => {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={handleImageChange}
+                    multiple
+                    onChange={(e) => handleImageChange(e)}
                   />
-                  Choose File
+                  Choose Files
                 </label>
 
-                {issueData.image && <p>Selected: {issueData.image.name}</p>}
+                {issueData.image && issueData.image.length > 0 && (
+                  <div style={{ marginTop: "10px" }}>
+                    <strong>Selected Images:</strong>
+                    <ul style={{ padding: 0 }}>
+                      {issueData.image.map((file, idx) => (
+                        <li
+                          key={idx}
+                          style={{
+                            listStyle: "none",
+                            marginBottom: "10px",
+                            position: "relative",
+                          }}
+                        >
+                          <button
+                            onClick={() => {
+                              const updated = [...issueData.image];
+                              updated.splice(idx, 1);
+                              setIssueData((prev) => ({
+                                ...prev,
+                                image: updated,
+                              }));
+                            }}
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              right: 0,
+                              background: "#f44336",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "50%",
+                              width: "20px",
+                              height: "20px",
+                              cursor: "pointer",
+                            }}
+                          >
+                            ×
+                          </button>
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt="preview"
+                            style={{
+                              width: "100px",
+                              height: "100px",
+                              objectFit: "cover",
+                              borderRadius: "6px",
+                              border: "1px solid #ccc",
+                            }}
+                          />
+                          <p style={{ fontSize: "12px", marginTop: "4px" }}>
+                            {file.name}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 {error && <p style={{ color: "red" }}>{error}</p>}
                 <div className="dialog-actions">
                   <button type="button" onClick={handleClose}>

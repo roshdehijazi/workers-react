@@ -16,6 +16,9 @@ const SimpleIssueList = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editIssue, setEditIssue] = useState(null);
   const [deleteIssueId, setDeleteIssueId] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(null);
+  const [selectedImageList, setSelectedImageList] = useState([]);
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
   const user = JSON.parse(localStorage.getItem("user"));
@@ -28,6 +31,7 @@ const SimpleIssueList = () => {
           `http://localhost:8088/issues/customer/${username}`
         );
         setIssues(response.data);
+        console.log(response.data);
       } catch (err) {
         setError("Failed to load issues");
       } finally {
@@ -102,12 +106,21 @@ const SimpleIssueList = () => {
               <div className="issues-grid">
                 {issues.map((issue) => (
                   <div className="issue-card" key={issue.id}>
-                    {issue.picture && (
-                      <img
-                        className="issue-image"
-                        src={require(`../../assets/customer/issuePictures/${issue.picture}`)}
-                        alt={issue.title}
-                      />
+                    {issue.images && issue.images.length > 0 && (
+                      <div className="issue-images-grid">
+                        {issue.images.map((img, index) => (
+                          <img
+                            key={index}
+                            className="issue-image"
+                            src={img}
+                            alt={`issue-${index}`}
+                            onClick={() => {
+                              setSelectedImageList(issue.images);
+                              setSelectedImageIndex(index);
+                            }}
+                          />
+                        ))}
+                      </div>
                     )}
 
                     <div className="issue-content">
@@ -208,6 +221,54 @@ const SimpleIssueList = () => {
                 Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {selectedImageIndex !== null && (
+        <div
+          className="image-modal-overlay"
+          onClick={() => setSelectedImageIndex(null)}
+        >
+          <div
+            className="image-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="modal-nav left"
+              onClick={() =>
+                setSelectedImageIndex(
+                  (prev) =>
+                    (prev - 1 + selectedImageList.length) %
+                    selectedImageList.length
+                )
+              }
+            >
+              ◀
+            </button>
+
+            <img
+              src={selectedImageList[selectedImageIndex]}
+              alt="Enlarged"
+              className="modal-image"
+            />
+
+            <button
+              className="modal-nav right"
+              onClick={() =>
+                setSelectedImageIndex(
+                  (prev) => (prev + 1) % selectedImageList.length
+                )
+              }
+            >
+              ▶
+            </button>
+
+            <button
+              className="close-modal"
+              onClick={() => setSelectedImageIndex(null)}
+            >
+              ✕
+            </button>
           </div>
         </div>
       )}

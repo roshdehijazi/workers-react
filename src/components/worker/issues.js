@@ -12,6 +12,8 @@ const AvailableIssues = () => {
   const [showOfferDialog, setShowOfferDialog] = useState(false);
   const [offerData, setOfferData] = useState({ price: "", description: "" });
   const [selectedIssue, setSelectedIssue] = useState(null);
+  const [selectedImageList, setSelectedImageList] = useState([]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(null);
 
   const openOfferDialog = (issue) => {
     setSelectedIssue(issue);
@@ -144,13 +146,23 @@ const AvailableIssues = () => {
             Array.isArray(issues) &&
             issues.map((issue) => (
               <div className="issue-card" key={issue.id}>
-                {issue.picture && (
-                  <img
-                    src={require(`../../assets/customer/issuePictures/${issue.picture}`)}
-                    alt={issue.title}
-                    className="issue-image"
-                  />
+                {issue.images && issue.images.length > 0 && (
+                  <div className="issue-images-grid">
+                    {issue.images.map((img, index) => (
+                      <img
+                        key={index}
+                        className="issue-image"
+                        src={img}
+                        alt={`issue-${index}`}
+                        onClick={() => {
+                          setSelectedImageList(issue.images);
+                          setSelectedImageIndex(index);
+                        }}
+                      />
+                    ))}
+                  </div>
                 )}
+
                 <div className="issue-content">
                   <h3>{issue.title}</h3>
                   <p>{issue.description}</p>
@@ -197,6 +209,55 @@ const AvailableIssues = () => {
           </div>
         </div>
       )}
+      {selectedImageIndex !== null && (
+        <div
+          className="image-modal-overlay"
+          onClick={() => setSelectedImageIndex(null)}
+        >
+          <div
+            className="image-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="modal-nav left"
+              onClick={() =>
+                setSelectedImageIndex(
+                  (prev) =>
+                    (prev - 1 + selectedImageList.length) %
+                    selectedImageList.length
+                )
+              }
+            >
+              ◀
+            </button>
+
+            <img
+              src={selectedImageList[selectedImageIndex]}
+              alt="Enlarged"
+              className="modal-image"
+            />
+
+            <button
+              className="modal-nav right"
+              onClick={() =>
+                setSelectedImageIndex(
+                  (prev) => (prev + 1) % selectedImageList.length
+                )
+              }
+            >
+              ▶
+            </button>
+
+            <button
+              className="close-modal"
+              onClick={() => setSelectedImageIndex(null)}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
       <ToastContainer position="top-right" />
     </div>
   );
