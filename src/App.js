@@ -15,6 +15,10 @@ import Register from "./components/register";
 import Home from "./components/customer/home";
 import Profile from "./components/customer/profile";
 import Contact from "./components/customer/contact";
+import CustomerChats from "./components/customer/customer-chats";
+import CustomerChatRoom from "./components/customer/customer-chatRoom";
+import CustomerNotifications from "./components/customer/notifications";
+
 import IssueList from "./components/customer/issuesList";
 import IssueOffers from "./components/customer/issueOffers";
 import FindWorker from "./components/customer/find-worker";
@@ -22,6 +26,8 @@ import FindWorker from "./components/customer/find-worker";
 import WorkerHome from "./components/worker/home";
 import WorkerIssues from "./components/worker/issues";
 import WorkerOffers from "./components/worker/offers";
+import WorkerChats from "./components/worker/chats";
+import WorkerChatRoom from "./components/worker/chatRoom";
 import WorkerProfile from "./components/worker/profile";
 import Help from "./components/worker/help";
 
@@ -92,6 +98,29 @@ function App() {
             element={isAuthenticated ? <Contact /> : <Navigate to="/login" />}
           />
           <Route
+            path="/customer/customer-chats"
+            element={
+              isAuthenticated ? <CustomerChats /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/customer-chat/:roomId"
+            element={
+              isAuthenticated ? <CustomerChatRoom /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/customer/notifications"
+            element={
+              isAuthenticated ? (
+                <CustomerNotifications />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
             path="/customer/issuesList"
             element={isAuthenticated ? <IssueList /> : <Navigate to="/login" />}
           />
@@ -126,6 +155,18 @@ function App() {
             path="/worker/offers"
             element={
               isAuthenticated ? <WorkerOffers /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/worker/chat"
+            element={
+              isAuthenticated ? <WorkerChats /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/worker/chatRoom/:roomId"
+            element={
+              isAuthenticated ? <WorkerChatRoom /> : <Navigate to="/login" />
             }
           />
           <Route

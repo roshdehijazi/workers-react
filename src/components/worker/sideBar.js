@@ -5,6 +5,7 @@ import {
   FaBell,
   FaCog,
   FaQuestionCircle,
+  FaComment,
 } from "react-icons/fa";
 import { Button } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -38,6 +39,7 @@ const WorkerSideBar = ({ isOpen, toggleSidebar }) => {
     { name: "Home", icon: <FaHome />, path: "/worker/home" },
     { name: "Available Issues", icon: <FaWrench />, path: "/worker/issues" },
     { name: "My Offers", icon: <FaBell />, path: "/worker/offers" },
+    { name: "My Chats", icon: <FaComment />, path: "/worker/chat" },
     { name: "Profile", icon: <FaCog />, path: "/worker/profile" },
     { name: "Help", icon: <FaQuestionCircle />, path: "/worker/help" },
   ];
