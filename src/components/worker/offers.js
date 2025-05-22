@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import WorkerSideBar from "./sideBar";
 import axios from "axios";
 import "../../styles/worker/offers.css";
@@ -11,9 +12,24 @@ const Offers = () => {
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [selectedImageList, setSelectedImageList] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
+  const [showChatBox, setShowChatBox] = useState(false);
+  const [chatCustomerId, setChatCustomerId] = useState(null);
+  const [customMessage, setCustomMessage] = useState("");
+
+  const handleContactCustomer = (customerId) => {
+    setChatCustomerId(customerId);
+    setShowChatBox(true);
+  };
 
   const user = JSON.parse(localStorage.getItem("user"));
   const username = user?.id;
+
+  const readyMessages = [
+    "Hi! I saw your issue and I'm interested in helping.",
+    "Can you please provide more details about your issue?",
+    "I'm available to assist you today, let me know your preferred time.",
+    "I just sent you an offer. Feel free to ask questions.",
+  ];
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -47,23 +63,29 @@ const Offers = () => {
     }
   };
 
-  const handleContactCustomer = async (customerId) => {
+  const navigate = useNavigate();
+
+  const sendMessage = async (messageContent) => {
     try {
-      const worker = JSON.parse(localStorage.getItem("user"));
-      const senderId = worker.id;
+      const sender = JSON.parse(localStorage.getItem("user"));
       const response = await axios.post("http://localhost:8088/chat/rooms", {
-        name: `Chat: ${senderId} - ${customerId}`,
-        participantIds: [senderId, customerId],
-        senderId: senderId,
-        content: "Test Messages 2 ..",
+        name: `Chat: ${sender.id} - ${chatCustomerId}`,
+        participantIds: [sender.id, chatCustomerId],
+        senderId: sender.id,
+        content: messageContent,
         timestamp: new Date().toISOString(),
       });
-      const data = response.data;
-      console.log(data);
-      toast.success("Message Sent Successfully!");
-    } catch (e) {
-      console.log("Error: ", e);
-      toast.error("Failed To Send Message");
+
+      const chatRoom = response.data;
+      toast.success("Message sent");
+
+      setShowChatBox(false);
+      setCustomMessage("");
+
+      navigate(`/worker/chatRoom/${chatRoom.chatRoomId || chatRoom.id}`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send message");
     }
   };
 
@@ -204,6 +226,72 @@ const Offers = () => {
             >
               ✕
             </button>
+          </div>
+        </div>
+      )}
+      {showChatBox && (
+        <div className="chat-box-modal">
+          <div className="chat-box">
+            <h3>Send a message</h3>
+            <div className="ready-messages">
+              {readyMessages.map((msg, i) => (
+                <button
+                  key={i}
+                  className="ready-msg-button"
+                  onClick={() => sendMessage(msg)}
+                >
+                  {msg}
+                </button>
+              ))}
+            </div>
+            <textarea
+              value={customMessage}
+              onChange={(e) => setCustomMessage(e.target.value)}
+              placeholder="Write your own message..."
+              rows="3"
+            />
+            <div className="chat-box-actions">
+              <button
+                onClick={() => sendMessage(customMessage)}
+                disabled={!customMessage.trim()}
+              >
+                Send
+              </button>
+              <button onClick={() => setShowChatBox(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showChatBox && (
+        <div className="chat-box-modal">
+          <div className="chat-box">
+            <h3>Send a message</h3>
+            <div className="ready-messages">
+              {readyMessages.map((msg, i) => (
+                <button
+                  key={i}
+                  className="ready-msg-button"
+                  onClick={() => sendMessage(msg)}
+                >
+                  {msg}
+                </button>
+              ))}
+            </div>
+            <textarea
+              value={customMessage}
+              onChange={(e) => setCustomMessage(e.target.value)}
+              placeholder="Write your own message..."
+              rows="3"
+            />
+            <div className="chat-box-actions">
+              <button
+                onClick={() => sendMessage(customMessage)}
+                disabled={!customMessage.trim()}
+              >
+                Send
+              </button>
+              <button onClick={() => setShowChatBox(false)}>Cancel</button>
+            </div>
           </div>
         </div>
       )}

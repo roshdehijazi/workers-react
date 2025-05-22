@@ -1,0 +1,45 @@
+.discount-action-buttons {
+  margin-top: 10px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.accept-discount,
+.decline-discount {
+  padding: 10px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+/* Default colors before choice */
+.accept-discount {
+  background-color: #2e7d32;
+  color: #fffef5;
+}
+
+.accept-discount:hover {
+  background-color: #1b5e20;
+  transform: scale(1.02);
+}
+
+.decline-discount {
+  background-color: #c62828;
+  color: #fffef5;
+}
+
+.decline-discount:hover {
+  background-color: #8e0000;
+  transform: scale(1.02);
+}
+
+/* Disabled state (if already accepted/declined) */
+.accept-discount:disabled,
+.decline-discount:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

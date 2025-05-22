@@ -40,6 +40,7 @@ const AvailableIssues = () => {
         toast.error("Price must be a positive number.");
         return;
       }
+
       const worker = JSON.parse(localStorage.getItem("user"));
       const offerLoad = {
         ...offerData,
@@ -54,12 +55,14 @@ const AvailableIssues = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(offerLoad),
       });
+
       if (!res.ok) {
         const msg = await res.text();
         toast.error(msg || "Server rejected offer");
         return;
       }
-      toast.success("Offer Send successfully", { autoClose: 2000 });
+
+      toast.success("Offer sent successfully", { autoClose: 2000 });
       closeOfferDialog();
     } catch (err) {
       console.error("Error sending offer:", err);

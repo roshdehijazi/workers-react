@@ -15,8 +15,8 @@ import Register from "./components/register";
 import Home from "./components/customer/home";
 import Profile from "./components/customer/profile";
 import Contact from "./components/customer/contact";
-import CustomerChats from "./components/customer/customer-chats";
-import CustomerChatRoom from "./components/customer/customer-chatRoom";
+import CustomerChats from "./components/customer/customerChats";
+import CustomerChatRoom from "./components/customer/customerChatRoom";
 import CustomerNotifications from "./components/customer/notifications";
 
 import IssueList from "./components/customer/issuesList";
@@ -26,8 +26,8 @@ import FindWorker from "./components/customer/find-worker";
 import WorkerHome from "./components/worker/home";
 import WorkerIssues from "./components/worker/issues";
 import WorkerOffers from "./components/worker/offers";
-import WorkerChats from "./components/worker/chats";
-import WorkerChatRoom from "./components/worker/chatRoom";
+import WorkerChats from "./components/worker/workerChats";
+import WorkerChatRoom from "./components/worker/workerChatRoom";
 import WorkerProfile from "./components/worker/profile";
 import Help from "./components/worker/help";
 

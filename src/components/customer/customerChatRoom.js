@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
 import axios from "axios";
-import WorkerSideBar from "./sideBar";
-import "../../styles/worker/chatRoom.css";
+import "../../styles/customer/customerChatRoom.css";
+import SideBar from "./sideBar";
 
-const WorkerChatRoom = () => {
-  const { roomId } = useParams();
+const CustomerChatRoom = ({ roomId, embedded = false }) => {
   const [messages, setMessages] = useState([]);
   const [newMsg, setNewMsg] = useState("");
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -20,14 +18,13 @@ const WorkerChatRoom = () => {
         );
         setMessages(res.data);
 
-        // Mark unread messages as read
         res.data.forEach((msg) => {
           if (!msg.isRead && msg.senderId !== user.id) {
             axios.put(`http://localhost:8088/chat/markAsRead/${msg.id}`);
           }
         });
       } catch (err) {
-        console.error("Failed to load messages:", err);
+        console.error("Error loading messages:", err);
       }
     };
 
@@ -37,10 +34,6 @@ const WorkerChatRoom = () => {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
-  };
 
   const sendMessage = async () => {
     if (!newMsg.trim()) return;
@@ -64,13 +57,19 @@ const WorkerChatRoom = () => {
     }
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div className="worker-dashboard">
-      <WorkerSideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+    <div className={embedded ? "chat-room-embedded" : "customer-dashboard"}>
+      {!embedded && (
+        <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      )}
 
       <div
         className={`chat-room-wrapper ${
-          isSidebarOpen ? "sidebar-open" : "sidebar-closed"
+          embedded ? "" : isSidebarOpen ? "sidebar-open" : "sidebar-closed"
         }`}
       >
         <div className="chat-room-header">Chat Room</div>
@@ -98,9 +97,7 @@ const WorkerChatRoom = () => {
             value={newMsg}
             onChange={(e) => setNewMsg(e.target.value)}
             placeholder="Type your message..."
-            onKeyDown={(e) => {
-              if (e.key === "Enter") sendMessage();
-            }}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           />
           <button onClick={sendMessage}>Send</button>
         </div>
@@ -109,4 +106,4 @@ const WorkerChatRoom = () => {
   );
 };
 
-export default WorkerChatRoom;
+export default CustomerChatRoom;

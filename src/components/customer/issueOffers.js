@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../styles/customer/issueOffers.css";
 import SideBar from "./sideBar";
@@ -10,7 +10,20 @@ const IssueOffers = () => {
   const { issueId } = useParams();
   const [offers, setOffers] = useState([]);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [showChatBox, setShowChatBox] = useState(false);
+  const [chatWorkerId, setChatWorkerId] = useState(null);
+  const [customMessage, setCustomMessage] = useState("");
+  const navigate = useNavigate();
+
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+
+  const readyMessages = [
+    "Hi! I saw your offer and I have a few questions.",
+    "Can you explain the price breakdown?",
+    "When would you be available to start?",
+    "Is this price final or negotiable?",
+    "Thank you for your offer. I'm considering it.",
+  ];
 
   const refreshOffers = useCallback(async () => {
     try {
@@ -18,7 +31,6 @@ const IssueOffers = () => {
         `http://localhost:8088/offers/forIssue?issueId=${issueId}`
       );
       setOffers(res.data);
-      console.log(res.data);
     } catch (err) {
       console.error("Failed to fetch offers:", err);
     }
@@ -28,13 +40,65 @@ const IssueOffers = () => {
     refreshOffers();
   }, [refreshOffers]);
 
+  const openChatAndSend = async (workerId, messageContent, meta = null) => {
+    try {
+      const customer = JSON.parse(localStorage.getItem("user"));
+      const res = await axios.get(
+        `http://localhost:8088/chat/rooms/${customer.id}`
+      );
+      const allRooms = res.data;
+
+      let chatRoom = allRooms.find(
+        (room) =>
+          room.participantIds.includes(customer.id) &&
+          room.participantIds.includes(workerId)
+      );
+
+      if (!chatRoom) {
+        const roomRes = await axios.post("http://localhost:8088/chat/rooms", {
+          name: `Chat: ${customer.id} - ${workerId}`,
+          participantIds: [customer.id, workerId],
+        });
+        chatRoom = roomRes.data;
+      }
+
+      await axios.post("http://localhost:8088/chat/messages", {
+        chatRoomId: chatRoom.id,
+        senderId: customer.id,
+        content: messageContent,
+        timestamp: new Date().toISOString(),
+        meta,
+      });
+
+      toast.success("Message sent");
+      setShowChatBox(false);
+      setCustomMessage("");
+      setTimeout(() => navigate("/customer/customer-chats"), 1000);
+    } catch (err) {
+      console.error("Failed to send message:", err);
+      toast.error("Failed to send message");
+    }
+  };
+
+  const handleDiscountRequest = async (offer) => {
+    const customer = JSON.parse(localStorage.getItem("user"));
+    const discountedPrice = Math.round(offer.price * 0.9);
+
+    const message = `Hi, I’d like to request a 10% discount on your offer. Would you accept $${discountedPrice} instead of $${offer.price}?`;
+
+    await openChatAndSend(offer.workerId, message, {
+      type: "discount_offer_request",
+      offerId: offer.id,
+      newPrice: discountedPrice,
+    });
+  };
+
   const handleAccept = async (offerId) => {
     try {
       await axios.put(`http://localhost:8088/offers/${offerId}/isAccepted`);
       toast.success("Offer accepted successfully.");
       refreshOffers();
     } catch (err) {
-      console.error("Failed to accept offer:", err);
       toast.error("Failed to accept offer.");
     }
   };
@@ -42,10 +106,10 @@ const IssueOffers = () => {
   const handleMarkFinished = async (offerId) => {
     try {
       await axios.put(`http://localhost:8088/offers/${offerId}/isFinished`);
+      await axios.put(`http://localhost:8088/issues/${issueId}/finish`);
       toast.success("Offer marked as finished.");
       refreshOffers();
     } catch (err) {
-      console.error("Failed to mark offer as finished:", err);
       toast.error("Failed to mark offer as finished.");
     }
   };
@@ -56,7 +120,6 @@ const IssueOffers = () => {
         Are you sure you want to delete this offer?
         <div style={{ marginTop: "10px" }}>
           <button
-            style={{ marginRight: "10px" }}
             onClick={async () => {
               try {
                 await axios.delete(`http://localhost:8088/offers/${offerId}`);
@@ -64,10 +127,10 @@ const IssueOffers = () => {
                 toast.success("Offer deleted.");
                 refreshOffers();
               } catch (err) {
-                console.error("Failed to delete offer:", err);
                 toast.error("Failed to delete offer.");
               }
             }}
+            style={{ marginRight: "10px" }}
           >
             Yes
           </button>
@@ -79,8 +142,8 @@ const IssueOffers = () => {
   };
 
   const handleMessage = (workerId) => {
-    toast.success("MESSAGE COMING SOON !!");
-    // TODO: Implement chat redirect
+    setChatWorkerId(workerId);
+    setShowChatBox(true);
   };
 
   return (
@@ -108,18 +171,17 @@ const IssueOffers = () => {
                   <strong>Worker ID:</strong> {offer.workerId}
                 </p>
                 <p>
-                  <strong>Status:</strong>
+                  <strong>Status:</strong>{" "}
                   {offer.finished
-                    ? " Finished"
+                    ? "Finished"
                     : offer.accepted
-                    ? " Accepted"
-                    : " Pending"}
+                    ? "Accepted"
+                    : "Pending"}
                 </p>
                 <div className="offer-actions">
                   <button onClick={() => handleMessage(offer.workerId)}>
                     Message
                   </button>
-
                   {offer.accepted ? (
                     <button
                       onClick={() => handleMarkFinished(offer.id)}
@@ -141,6 +203,12 @@ const IssueOffers = () => {
                       >
                         Delete
                       </button>
+                      <button
+                        className="offer-discount"
+                        onClick={() => handleDiscountRequest(offer)}
+                      >
+                        Request 10% Discount
+                      </button>
                     </>
                   )}
                 </div>
@@ -149,6 +217,39 @@ const IssueOffers = () => {
           </div>
         )}
       </div>
+      {showChatBox && (
+        <div className="chat-box-modal">
+          <div className="chat-box">
+            <h3>Send a message</h3>
+            <div className="ready-messages">
+              {readyMessages.map((msg, i) => (
+                <button
+                  key={i}
+                  className="ready-msg-button"
+                  onClick={() => openChatAndSend(chatWorkerId, msg)}
+                >
+                  {msg}
+                </button>
+              ))}
+            </div>
+            <textarea
+              value={customMessage}
+              onChange={(e) => setCustomMessage(e.target.value)}
+              placeholder="Write your own message..."
+              rows="3"
+            />
+            <div className="chat-box-actions">
+              <button
+                onClick={() => openChatAndSend(chatWorkerId, customMessage)}
+                disabled={!customMessage.trim()}
+              >
+                Send
+              </button>
+              <button onClick={() => setShowChatBox(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );

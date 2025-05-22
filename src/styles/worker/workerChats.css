@@ -1,0 +1,153 @@
+.worker-chats-dashboard {
+  display: flex;
+  height: 100vh;
+  background-color: #fffef5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+/* Full viewport, split layout */
+.split-chat-wrapper {
+  display: flex;
+  flex-grow: 1;
+  height: 100%;
+  width: 100%;
+  transition: margin-left 0.3s ease;
+  overflow: hidden;
+}
+
+.split-chat-wrapper.sidebar-open {
+  margin-left: 250px;
+}
+
+.split-chat-wrapper.sidebar-closed {
+  margin-left: 80px;
+}
+
+/* Left Panel (chat list) */
+.chat-list-pane {
+  width: 240px;
+  background-color: #fffef5;
+  border-right: 1px solid #e0e0e0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* Search Input */
+.chat-search {
+  padding: 10px 16px;
+  font-size: 14px;
+  width: 88%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background-color: #fff;
+}
+
+/* Chat list */
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+/* Chat Cards */
+.chat-card {
+  display: flex;
+  align-items: flex-start;
+  background-color: #fffaf0;
+  border: 1px solid #e6d8b4;
+  border-radius: 10px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chat-card.active {
+  background-color: #f5f5dc;
+  border-color: #dfd1a3;
+}
+
+.chat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.chat-icon {
+  font-size: 22px;
+  color: #2c2c2c;
+  margin-right: 10px;
+  margin-top: 4px;
+}
+
+/* Chat Info */
+.chat-info {
+  flex: 1;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+.chat-time {
+  font-size: 11px;
+  color: #888;
+}
+
+.chat-preview {
+  font-size: 13px;
+  color: #444;
+  margin-top: 4px;
+}
+
+/* Right Panel (chat display) */
+.chat-display-pane {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #fffef5;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Placeholder when no chat selected */
+.chat-placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: #FEEFD3;
+  color: #444;
+  font-size: 15px;
+  text-align: center;
+  padding: 20px;
+}
+
+.chat-placeholder img {
+  width: 300px;
+  max-width: 90%;
+  margin-bottom: 20px;
+  opacity: 0.85;
+  transition: transform 0.8s ease;
+}
+
+.chat-placeholder img:hover {
+  transform: scale(1.01);
+}
+
+.no-chats {
+  color: #999;
+  font-size: 15px;
+  padding: 20px;
+}

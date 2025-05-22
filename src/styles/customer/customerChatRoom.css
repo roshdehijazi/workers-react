@@ -1,0 +1,126 @@
+.customer-dashboard {
+  display: flex;
+  background-color: #fffef5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+}
+
+.chat-room-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #fffef5;
+}
+
+
+.chat-room-wrapper.sidebar-open {
+  margin-left: 250px;
+}
+
+.chat-room-wrapper.sidebar-closed {
+  margin-left: 80px;
+}
+
+/* Header */
+.chat-room-header {
+  padding: 20px 30px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1e1e1e;
+  background-color: #f5f1e8;
+  border-bottom: 1px solid #ddd;
+}
+
+
+.chat-room-messages {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 30px;
+  overflow-y: auto;
+  gap: 12px;
+}
+
+
+.chat-message {
+  max-width: 65%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  position: relative;
+  line-height: 1.4;
+  word-wrap: break-word;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  display: inline-block;
+}
+
+
+.chat-message.sent {
+  align-self: flex-end;
+  background-color: #2c2c2c;
+  color: #fffef5;
+  border-bottom-right-radius: 0;
+}
+
+.chat-message.received {
+  align-self: flex-start;
+  background-color: #f0f0f0;
+  color: #333;
+  border-bottom-left-radius: 0;
+}
+
+
+.chat-time {
+  font-size: 11px;
+  color: #999;
+  margin-top: 6px;
+  display: block;
+  text-align: right;
+}
+
+/* Input Area */
+.chat-input-area {
+  display: flex;
+  padding: 18px 24px;
+  background-color: #f9f7f1;
+  border-top: 1px solid #ddd;
+  gap: 10px;
+}
+
+.chat-input-area input {
+  flex: 1;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: #fff;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.chat-input-area input:focus {
+  border-color: #999;
+}
+
+.chat-input-area button {
+  background-color: #2c2c2c;
+  color: #fffef5;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.chat-input-area button:hover {
+  background-color: #1e1e1e;
+}
+.customer-dashboard,
+.chat-room-embedded {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
