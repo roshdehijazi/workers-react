@@ -52,8 +52,8 @@ function App() {
   }, []);
 
   const getRedirectPath = () => {
-    if (userRole === "Customer") return "/customer/home";
-    if (userRole === "Worker") return "/worker/home";
+    if (userRole === "CUSTOMER") return "/customer/home";
+    if (userRole === "WORKER") return "/worker/home";
     if (userRole === "admin") return "/admin/home";
     return "/login"; // fallback
   };
