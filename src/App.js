@@ -10,6 +10,8 @@ import { Box } from "@mui/material";
 // Auth pages
 import Login from "./components/login";
 import Register from "./components/register";
+import ForgetPassword from "./components/forgot-password";
+import ResetPassword from "./components/resetPassword";
 
 // Customer pages
 import Home from "./components/customer/home";
@@ -29,6 +31,7 @@ import WorkerOffers from "./components/worker/offers";
 import WorkerChats from "./components/worker/workerChats";
 import WorkerChatRoom from "./components/worker/workerChatRoom";
 import WorkerProfile from "./components/worker/profile";
+import WorkerNotifications from "./components/worker/notifications";
 import Help from "./components/worker/help";
 
 // Admin pages
@@ -83,6 +86,17 @@ function App() {
               )
             }
           />
+          <Route
+            path="/forgot-password"
+            element={
+              isAuthenticated ? (
+                <Navigate to={getRedirectPath()} />
+              ) : (
+                <ForgetPassword setAuth={setIsAuthenticated} />
+              )
+            }
+          />
+          <Route path="/reset-password/:username" element={<ResetPassword />} />
 
           {/* Customer Routes */}
           <Route
@@ -178,6 +192,16 @@ function App() {
           <Route
             path="/worker/help"
             element={isAuthenticated ? <Help /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/worker/notifications"
+            element={
+              isAuthenticated ? (
+                <WorkerNotifications />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
           />
 
           {/* Admin Routes */}

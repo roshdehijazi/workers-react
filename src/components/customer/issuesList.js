@@ -8,7 +8,6 @@ const CATEGORY_OPTIONS = ["ELECTRICAL", "PLUMBING", "FURNITURE", "PAINTING"];
 
 const SimpleIssueList = () => {
   const navigate = useNavigate();
-  const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -16,34 +15,38 @@ const SimpleIssueList = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editIssue, setEditIssue] = useState(null);
   const [deleteIssueId, setDeleteIssueId] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [selectedImageList, setSelectedImageList] = useState([]);
+  const [unFinishedIssues, setUnFinishedIssues] = useState([]);
+  const [finishedIssues, setFinishedIssues] = useState([]);
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
   const user = JSON.parse(localStorage.getItem("user"));
   const username = user.id;
 
   useEffect(() => {
-    const fetchIssues = async () => {
+    const fetchAll = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8088/issues/customer/${username}`
-        );
-        setIssues(response.data);
-        console.log(response.data);
+        const [unFinishedRes, finishedRes] = await Promise.all([
+          axios.get(`http://localhost:8088/issues/unFinishedIssues`),
+          axios.get(`http://localhost:8088/issues/finishedIssues`),
+        ]);
+        setUnFinishedIssues(unFinishedRes.data);
+        setFinishedIssues(finishedRes.data);
       } catch (err) {
         setError("Failed to load issues");
       } finally {
         setLoading(false);
       }
     };
-    if (username) fetchIssues();
+    if (username) fetchAll();
   }, [username]);
 
   const handleDelete = async () => {
     await axios.delete(`http://localhost:8088/issues/${deleteIssueId}`);
-    setIssues((prev) => prev.filter((issue) => issue.id !== deleteIssueId));
+    setUnFinishedIssues((prev) =>
+      prev.filter((issue) => issue.id !== deleteIssueId)
+    );
     setDeleteDialogOpen(false);
   };
 
@@ -76,6 +79,68 @@ const SimpleIssueList = () => {
     window.location.reload();
   };
 
+  const renderIssueCard = (issue, showEdit = true) => (
+    <div className="issue-card" key={issue.id}>
+      {issue.images?.length > 0 && (
+        <div className="issue-images-grid">
+          {issue.images.map((img, index) => (
+            <img
+              key={index}
+              className="issue-image"
+              src={img}
+              alt={`issue-${index}`}
+              onClick={() => {
+                setSelectedImageList(issue.images);
+                setSelectedImageIndex(index);
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="issue-content">
+        <h3>{issue.title}</h3>
+        <p>{issue.description}</p>
+
+        <div className="chip-container">
+          <span className={`chip ${issue.category.toLowerCase()}`}>
+            {issue.category}
+          </span>
+          <span className={`chip ${issue.isFinished ? "done" : "pending"}`}>
+            {issue.isFinished ? "Completed" : "Pending"}
+          </span>
+        </div>
+
+        <p className="issue-date">
+          {new Date(issue.startDate).toLocaleDateString()}
+        </p>
+        <div className="issue-views">
+          <span role="img" aria-label="views">
+            👁️
+          </span>{" "}
+          {issue.countViewrs || 0} views
+        </div>
+      </div>
+
+      <div className="issue-actions">
+        {showEdit && (
+          <>
+            <button onClick={() => handleOpenEditDialog(issue)}>Edit</button>
+            <button onClick={() => handleOpenDeleteDialog(issue.id)}>
+              Delete
+            </button>
+          </>
+        )}
+      </div>
+      <button
+        className="list-offers-btn"
+        onClick={() => navigate(`/issueOffers/${issue.id}`)}
+      >
+        View Offers
+      </button>
+    </div>
+  );
+
   return (
     <div className="customer-dashboard">
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -88,7 +153,6 @@ const SimpleIssueList = () => {
         <h2 className="issues-title">Reported Issues</h2>
 
         {loading && <div className="loading-box">Loading...</div>}
-
         {error && (
           <div className="error-box">
             <p>{error}</p>
@@ -98,79 +162,15 @@ const SimpleIssueList = () => {
 
         {!loading && !error && (
           <>
-            {issues.length === 0 ? (
-              <p className="no-issues-message">
-                You haven’t reported any issues yet.
-              </p>
-            ) : (
-              <div className="issues-grid">
-                {issues.map((issue) => (
-                  <div className="issue-card" key={issue.id}>
-                    {issue.images && issue.images.length > 0 && (
-                      <div className="issue-images-grid">
-                        {issue.images.map((img, index) => (
-                          <img
-                            key={index}
-                            className="issue-image"
-                            src={img}
-                            alt={`issue-${index}`}
-                            onClick={() => {
-                              setSelectedImageList(issue.images);
-                              setSelectedImageIndex(index);
-                            }}
-                          />
-                        ))}
-                      </div>
-                    )}
+            <h3 className="issues-subtitle">Unfinished Issues</h3>
+            <div className="issues-grid">
+              {unFinishedIssues.map((issue) => renderIssueCard(issue, true))}
+            </div>
 
-                    <div className="issue-content">
-                      <h3>{issue.title}</h3>
-                      <p>{issue.description}</p>
-
-                      <div className="chip-container">
-                        <span
-                          className={`chip ${issue.category.toLowerCase()}`}
-                        >
-                          {issue.category}
-                        </span>
-                        <span
-                          className={`chip ${
-                            issue.isFinished ? "done" : "pending"
-                          }`}
-                        >
-                          {issue.isFinished ? "Completed" : "Pending"}
-                        </span>
-                      </div>
-
-                      <p className="issue-date">
-                        {new Date(issue.startDate).toLocaleDateString()}
-                      </p>
-                      <div className="issue-views">
-                        <span role="img" aria-label="views">
-                          👁️
-                        </span>{" "}
-                        {issue.countViewrs || 0} views
-                      </div>
-                    </div>
-
-                    <div className="issue-actions">
-                      <button onClick={() => handleOpenEditDialog(issue)}>
-                        Edit
-                      </button>
-                      <button onClick={() => handleOpenDeleteDialog(issue.id)}>
-                        Delete
-                      </button>
-                    </div>
-                    <button
-                      className="list-offers-btn"
-                      onClick={() => navigate(`/issueOffers/${issue.id}`)}
-                    >
-                      View Offers
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+            <h3 className="issues-subtitle">Finished Issues</h3>
+            <div className="issues-grid">
+              {finishedIssues.map((issue) => renderIssueCard(issue, false))}
+            </div>
           </>
         )}
       </div>
@@ -224,6 +224,7 @@ const SimpleIssueList = () => {
           </div>
         </div>
       )}
+
       {selectedImageIndex !== null && (
         <div
           className="image-modal-overlay"
@@ -245,13 +246,11 @@ const SimpleIssueList = () => {
             >
               ◀
             </button>
-
             <img
               src={selectedImageList[selectedImageIndex]}
               alt="Enlarged"
               className="modal-image"
             />
-
             <button
               className="modal-nav right"
               onClick={() =>
@@ -262,7 +261,6 @@ const SimpleIssueList = () => {
             >
               ▶
             </button>
-
             <button
               className="close-modal"
               onClick={() => setSelectedImageIndex(null)}

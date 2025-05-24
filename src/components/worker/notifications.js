@@ -20,6 +20,7 @@ const Notifications = () => {
           `http://localhost:8088/Notifications/${user.id}`
         );
         setNotifications(res.data);
+        console.log(res.data);
       } catch (err) {
         console.error("Failed to fetch notifications", err);
       } finally {
@@ -62,7 +63,25 @@ const Notifications = () => {
                 className={`notification-item ${n.read ? "read" : "unread"}`}
                 onClick={() => !n.read && markAsRead(n.id)}
               >
-                <p className="notification-message">{n.message}</p>
+                <div className="notification-content">
+                  <span className="notification-message">{n.message}</span>
+                  {n.issueId && (
+                    <span
+                      className="issue-title-link"
+                      onClick={() =>
+                        (window.location.href = `/customer/issue/${n.issueId}`)
+                      }
+                      style={{
+                        color: "#007bff",
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      View Issue
+                    </span>
+                  )}
+                </div>
+
                 {!n.read && <span className="badge">New</span>}
               </li>
             ))}

@@ -63,3 +63,17 @@
   border-radius: 10px;
   font-weight: bold;
 }
+
+.view-issue-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.view-issue-btn:hover {
+  background-color: #0056b3;
+}

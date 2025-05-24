@@ -169,3 +169,16 @@
 .chat-box-actions button:last-child {
   background-color: #eee;
 }
+
+
+.star-rating {
+  display: flex;
+  gap: 4px;
+  margin: 8px 0;
+}
+
+.star {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+

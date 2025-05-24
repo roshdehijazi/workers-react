@@ -4,6 +4,7 @@ import axios from "axios";
 import "../../styles/customer/issueOffers.css";
 import SideBar from "./sideBar";
 import { toast, ToastContainer } from "react-toastify";
+import { FaStar } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 
 const IssueOffers = () => {
@@ -13,7 +14,69 @@ const IssueOffers = () => {
   const [showChatBox, setShowChatBox] = useState(false);
   const [chatWorkerId, setChatWorkerId] = useState(null);
   const [customMessage, setCustomMessage] = useState("");
+  const [ratingMap, setRatingMap] = useState({});
+  const [hoverMap, setHoverMap] = useState({});
+
   const navigate = useNavigate();
+  const customer = JSON.parse(localStorage.getItem("user"));
+
+  const handleRatingChange = (offerId, value) => {
+    setRatingMap((prev) => ({ ...prev, [offerId]: value }));
+  };
+
+  const handleRatingSubmit = async (offer) => {
+    const rating = ratingMap[offer.id];
+    if (!rating) return;
+    try {
+      await axios.put("http://localhost:8088/users/addRating", {
+        workerId: offer.workerId,
+        rating,
+        description: "Rated via finished offer",
+      });
+
+      await axios.put(`http://localhost:8088/offers/${offer.id}/markRated`);
+      toast.success("Rating submitted and notification sent.");
+      await axios.post("http://localhost:8088/Notifications", {
+        userId: offer.workerId,
+        message: `${customer.username} Rated you ${rating} stars for solving his issue ${issueId}.`,
+        isRead: false,
+        issueId: issueId,
+      });
+      refreshOffers();
+    } catch (err) {
+      toast.error("Failed to submit rating.");
+    }
+  };
+
+  const renderStars = (offerId) => {
+    const rating = ratingMap[offerId] || 0;
+    const hover = hoverMap[offerId] || 0;
+
+    return (
+      <div className="star-rating">
+        {[1, 2, 3, 4, 5].map((value) => (
+          <label key={value}>
+            <input
+              type="radio"
+              name={`rating-${offerId}`}
+              value={value}
+              onClick={() => handleRatingChange(offerId, value)}
+              style={{ display: "none" }}
+            />
+            <FaStar
+              className="star"
+              size={20}
+              color={value <= (hover || rating) ? "#ffc107" : "#ccc"}
+              onMouseEnter={() =>
+                setHoverMap({ ...hoverMap, [offerId]: value })
+              }
+              onMouseLeave={() => setHoverMap({ ...hoverMap, [offerId]: 0 })}
+            />
+          </label>
+        ))}
+      </div>
+    );
+  };
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
@@ -31,6 +94,7 @@ const IssueOffers = () => {
         `http://localhost:8088/offers/forIssue?issueId=${issueId}`
       );
       setOffers(res.data);
+      console.log(res.data);
     } catch (err) {
       console.error("Failed to fetch offers:", err);
     }
@@ -81,6 +145,12 @@ const IssueOffers = () => {
   };
 
   const handleDiscountRequest = async (offer) => {
+    await axios.post("http://localhost:8088/Notifications", {
+      userId: offer.workerId,
+      message: `${customer.username} requested a discount on your offer for issue ${issueId}.`,
+      isRead: false,
+    });
+
     const customer = JSON.parse(localStorage.getItem("user"));
     const discountedPrice = Math.round(offer.price * 0.9);
 
@@ -95,10 +165,25 @@ const IssueOffers = () => {
 
   const handleAccept = async (offerId) => {
     try {
+      const offer = offers.find((o) => o.id === offerId);
+      if (!offer) {
+        toast.error("Offer not found.");
+        return;
+      }
+
       await axios.put(`http://localhost:8088/offers/${offerId}/isAccepted`);
+
+      await axios.post("http://localhost:8088/Notifications", {
+        userId: offer.workerId,
+        message: `${customer.username} accepted your offer for issue ${issueId}.`,
+        isRead: false,
+        issueId: issueId,
+      });
+
       toast.success("Offer accepted successfully.");
       refreshOffers();
     } catch (err) {
+      console.error(err);
       toast.error("Failed to accept offer.");
     }
   };
@@ -146,6 +231,10 @@ const IssueOffers = () => {
     setShowChatBox(true);
   };
 
+  const displayedOffers = offers.some((o) => o.accepted)
+    ? offers.filter((o) => o.accepted)
+    : offers;
+
   return (
     <div className="offers-page">
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -159,7 +248,7 @@ const IssueOffers = () => {
           <p>No offers available for this issue.</p>
         ) : (
           <div className="offers-list">
-            {offers.map((offer) => (
+            {displayedOffers.map((offer) => (
               <div key={offer.id} className="offer-box">
                 <p>
                   <strong>Description:</strong> {offer.description}
@@ -182,7 +271,14 @@ const IssueOffers = () => {
                   <button onClick={() => handleMessage(offer.workerId)}>
                     Message
                   </button>
-                  {offer.accepted ? (
+                  {offer.finished && !offer.rated ? (
+                    <div className="rating-section">
+                      {renderStars(offer.id)}
+                      <button onClick={() => handleRatingSubmit(offer)}>
+                        Send Rating
+                      </button>
+                    </div>
+                  ) : offer.accepted ? (
                     <button
                       onClick={() => handleMarkFinished(offer.id)}
                       disabled={offer.finished}

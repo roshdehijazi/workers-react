@@ -474,3 +474,9 @@
   cursor: pointer;
   padding: 5px 10px;
 }
+.issues-subtitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 70px 0 20px;
+  color: #333;
+}

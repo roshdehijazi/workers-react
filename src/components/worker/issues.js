@@ -64,6 +64,7 @@ const AvailableIssues = () => {
 
       toast.success("Offer sent successfully", { autoClose: 2000 });
       closeOfferDialog();
+      fetchIssues();
     } catch (err) {
       console.error("Error sending offer:", err);
       toast.error("Failed to send offer");
@@ -74,33 +75,41 @@ const AvailableIssues = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
-  useEffect(() => {
-    const fetchIssues = async () => {
-      let url = "";
+  const fetchIssues = async () => {
+    let url = `http://localhost:8088/issues/unFinishedIssues`;
 
-      if (filteredCategory && sortOrder) {
-        url = `http://localhost:8088/issues/category/${sortOrder}?category=${filteredCategory}`;
-      } else if (filteredCategory && !sortOrder) {
-        url = `http://localhost:8088/issues/category/${filteredCategory}`;
-      } else {
-        url = `http://localhost:8088/issues/${sortOrder}`;
-      }
+    try {
+      const res = await fetch(url);
+      let data = await res.json();
 
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setIssues(data);
-        } else {
-          console.error("Unexpected response format:", data);
-          setIssues([]); // fallback to empty
+      if (Array.isArray(data)) {
+        // filter by category
+        if (filteredCategory) {
+          data = data.filter(
+            (issue) =>
+              issue.category.toLowerCase() === filteredCategory.toLowerCase()
+          );
         }
-      } catch (error) {
-        console.error("Error fetching issues: ", error);
+
+        // sort by startDate
+        data.sort((a, b) => {
+          const dateA = new Date(a.startDate);
+          const dateB = new Date(b.startDate);
+          return sortOrder === "newer" ? dateB - dateA : dateA - dateB;
+        });
+
+        setIssues(data);
+      } else {
+        console.error("Unexpected response format:", data);
         setIssues([]);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching issues: ", error);
+      setIssues([]);
+    }
+  };
 
+  useEffect(() => {
     fetchIssues();
   }, [filteredCategory, sortOrder]);
 

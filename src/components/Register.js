@@ -9,7 +9,7 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "Customer",
+    role: "CUSTOMER",
   });
   const [successMessage, setSuccessMessage] = useState("");
   const [errors, setErrors] = useState({});
@@ -65,7 +65,7 @@ const Register = () => {
       }
 
       setSuccessMessage("Registration successful! Redirecting to login...");
-      setTimeout(() => navigate("/login"), 2000); // redirect after 2 seconds
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       setServerError("Server error. Please try again later.");
     } finally {
@@ -130,8 +130,8 @@ const Register = () => {
 
           <label>Role</label>
           <select name="role" value={formData.role} onChange={handleChange}>
-            <option value="Customer">Customer</option>
-            <option value="Worker">Worker</option>
+            <option value="CUSTOMER">Customer</option>
+            <option value="WORKER">Worker</option>
           </select>
 
           <button type="submit" disabled={loading}>
